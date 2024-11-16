@@ -1,0 +1,173 @@
+HOME=/home/neepaw
+LANG=en_US.UTF-8
+LC_ADDRESS=ru_RU.UTF-8
+LC_IDENTIFICATION=ru_RU.UTF-8
+LC_MEASUREMENT=ru_RU.UTF-8
+LC_MONETARY=ru_RU.UTF-8
+LC_NAME=ru_RU.UTF-8
+LC_NUMERIC=ru_RU.UTF-8
+LC_PAPER=ru_RU.UTF-8
+LC_TELEPHONE=ru_RU.UTF-8
+LC_TIME=ru_RU.UTF-8
+LOGNAME=neepaw
+PATH=/usr/local/java/jdk-22.0.1/bin:/home/neepaw/anaconda3/envs/seminar/bin:/home/neepaw/anaconda3/condabin:/home/neepaw/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/neepaw/.local/share/JetBrains/Toolbox/scripts:/usr/local/java/jdk-22.0.1/bin:/usr/local/java/jdk-22.0.1/bin:/home/neepaw/anaconda3/bin:/home/neepaw/anaconda3/condabin:/home/neepaw/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/neepaw/.local/share/JetBrains/Toolbox/scripts:/usr/local/java/jdk-22.0.1/bin:/home/neepaw/anaconda3/bin:/home/neepaw/anaconda3/condabin:/home/neepaw/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/neepaw/.local/share/JetBrains/Toolbox/scripts
+SHELL=/usr/bin/zsh
+USER=neepaw
+XDG_DATA_DIRS=/usr/share/ubuntu:/usr/share/gnome:/home/neepaw/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+XDG_RUNTIME_DIR=/run/user/1000
+GTK_MODULES=gail:atk-bridge
+QT_ACCESSIBILITY=1
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+DEBUGINFOD_URLS=https://debuginfod.ubuntu.com 
+DESKTOP_SESSION=ubuntu
+DISPLAY=:0
+GDMSESSION=ubuntu
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+GNOME_SHELL_SESSION_MODE=ubuntu
+GPG_AGENT_INFO=/run/user/1000/gnupg/S.gpg-agent:0:1
+GSM_SKIP_SSH_AGENT_WORKAROUND=true
+PWD=/home/neepaw/Researches/ETU2024_AISeminar_DataCompression
+QT_IM_MODULE=ibus
+SESSION_MANAGER=local/NekitLaptop:@/tmp/.ICE-unix/2095,unix/NekitLaptop:/tmp/.ICE-unix/2095
+SHLVL=1
+SSH_AUTH_SOCK=/run/user/1000/keyring/ssh
+USERNAME=neepaw
+WINDOWPATH=2
+XAUTHORITY=/run/user/1000/gdm/Xauthority
+XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/etc/xdg
+XDG_CURRENT_DESKTOP=Unity
+XDG_MENU_PREFIX=gnome-
+XDG_SESSION_CLASS=user
+XDG_SESSION_DESKTOP=ubuntu
+XDG_SESSION_TYPE=x11
+XMODIFIERS=@im=ibus
+MANAGERPID=1726
+INVOCATION_ID=caa08c0733f54da48b63f182b9af42ad
+JOURNAL_STREAM=8:11170
+SYSTEMD_EXEC_PID=2133
+MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@x11.service/memory.pressure
+MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=
+GJS_DEBUG_OUTPUT=stderr
+GJS_DEBUG_TOPICS=JS ERROR;JS LOG
+GIO_LAUNCHED_DESKTOP_FILE=/usr/share/applications/code.desktop
+GIO_LAUNCHED_DESKTOP_FILE_PID=44847
+CHROME_DESKTOP=code.desktop
+ORIGINAL_XDG_CURRENT_DESKTOP=ubuntu:GNOME
+GDK_BACKEND=x11
+OLDPWD=/home/neepaw/Researches/ETU2024_AISeminar_DataCompression
+ZSH=/home/neepaw/.oh-my-zsh
+PAGER=less
+LESS=-R
+LSCOLORS=Gxfxcxdxbxegedabagacad
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:
+CONDA_EXE=/home/neepaw/anaconda3/bin/conda
+_CE_M=
+_CE_CONDA=
+CONDA_PYTHON_EXE=/home/neepaw/anaconda3/bin/python
+CONDA_SHLVL=2
+CONDA_PREFIX=/home/neepaw/anaconda3/envs/seminar
+CONDA_DEFAULT_ENV=seminar
+CONDA_PROMPT_MODIFIER=(seminar) 
+ADDR2LINE=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-addr2line
+AR=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-ar
+AS=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-as
+CXXFILT=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-c++filt
+ELFEDIT=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-elfedit
+GPROF=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-gprof
+LD=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-ld
+LD_GOLD=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-ld.gold
+NM=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-nm
+OBJCOPY=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-objcopy
+OBJDUMP=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-objdump
+RANLIB=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-ranlib
+READELF=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-readelf
+SIZE=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-size
+STRINGS=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-strings
+STRIP=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-strip
+CONDA_BACKUP_HOST=x86_64-conda-linux-gnu
+HOST=NekitLaptop
+BUILD=x86_64-conda-linux-gnu
+CC=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-cc
+CPP=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-cpp
+GCC=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-gcc
+GCC_AR=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-gcc-ar
+GCC_NM=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-gcc-nm
+GCC_RANLIB=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-gcc-ranlib
+CPPFLAGS=-DNDEBUG -D_FORTIFY_SOURCE=2 -O2 -isystem /home/neepaw/anaconda3/include
+CFLAGS=-march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/neepaw/anaconda3/include
+LDFLAGS=-Wl,-O2 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,-rpath,/home/neepaw/anaconda3/lib -Wl,-rpath-link,/home/neepaw/anaconda3/lib -L/home/neepaw/anaconda3/lib
+DEBUG_CPPFLAGS=-D_DEBUG -D_FORTIFY_SOURCE=2 -Og -isystem /home/neepaw/anaconda3/include
+DEBUG_CFLAGS=-march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-all -fno-plt -Og -g -Wall -Wextra -fvar-tracking-assignments -ffunction-sections -pipe -isystem /home/neepaw/anaconda3/include
+CMAKE_PREFIX_PATH=/home/neepaw/anaconda3:/home/neepaw/anaconda3/x86_64-conda-linux-gnu/sysroot/usr
+_CONDA_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata_x86_64_conda_cos7_linux_gnu
+CONDA_BUILD_SYSROOT=/home/neepaw/anaconda3/x86_64-conda-linux-gnu/sysroot
+CC_FOR_BUILD=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-cc
+build_alias=x86_64-conda-linux-gnu
+host_alias=x86_64-conda-linux-gnu
+CMAKE_ARGS=-DCMAKE_LINKER=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-ld -DCMAKE_STRIP=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-strip
+CXX=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-c++
+GXX=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-g++
+CXXFLAGS=-fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/neepaw/anaconda3/include
+DEBUG_CXXFLAGS=-fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-all -fno-plt -Og -g -Wall -Wextra -fvar-tracking-assignments -ffunction-sections -pipe -isystem /home/neepaw/anaconda3/include
+CXX_FOR_BUILD=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-c++
+LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
+LC_ALL=en_US.UTF-8
+JAVA_HOME=/usr/local/java/jdk-22.0.1
+JETBRAINS_HOME=/home/neepaw/.local/share/JetBrains
+_=/usr/bin/printenv
+TERM_PROGRAM=vscode
+TERM_PROGRAM_VERSION=1.95.2
+COLORTERM=truecolor
+GIT_ASKPASS=/usr/share/code/resources/app/extensions/git/dist/askpass.sh
+VSCODE_GIT_ASKPASS_NODE=/usr/share/code/code
+VSCODE_GIT_ASKPASS_EXTRA_ARGS=
+VSCODE_GIT_ASKPASS_MAIN=/usr/share/code/resources/app/extensions/git/dist/askpass-main.js
+VSCODE_GIT_IPC_HANDLE=/run/user/1000/vscode-git-cd672793df.sock
+CONDA_BACKUP_GCC_NM=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-gcc-nm
+CONDA_BACKUP_LDFLAGS=-Wl,-O2 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,-rpath,/home/neepaw/anaconda3/lib -Wl,-rpath-link,/home/neepaw/anaconda3/lib -L/home/neepaw/anaconda3/lib
+CONDA_BACKUP_CONDA_BUILD_SYSROOT=/home/neepaw/anaconda3/x86_64-conda-linux-gnu/sysroot
+CONDA_BACKUP_STRIP=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-strip
+CONDA_BACKUP_DEBUG_CFLAGS=-march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-all -fno-plt -Og -g -Wall -Wextra -fvar-tracking-assignments -ffunction-sections -pipe -isystem /home/neepaw/anaconda3/include
+CONDA_BACKUP_DEBUG_CPPFLAGS=-D_DEBUG -D_FORTIFY_SOURCE=2 -Og -isystem /home/neepaw/anaconda3/include
+CONDA_BACKUP_build_alias=x86_64-conda-linux-gnu
+CONDA_BACKUP_DEBUG_CXXFLAGS=-fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-all -fno-plt -Og -g -Wall -Wextra -fvar-tracking-assignments -ffunction-sections -pipe -isystem /home/neepaw/anaconda3/include
+CONDA_BACKUP_SIZE=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-size
+CONDA_BACKUP_ELFEDIT=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-elfedit
+CONDA_BACKUP_BUILD=x86_64-conda-linux-gnu
+CONDA_BACKUP_CPP=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-cpp
+CONDA_ROOT=/home/neepaw/anaconda3
+CONDA_BACKUP_AS=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-as
+CONDA_BACKUP_AR=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-ar
+CONDA_BACKUP_GPROF=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-gprof
+CONDA_BACKUP_GXX=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-g++
+CONDA_BACKUP_ADDR2LINE=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-addr2line
+CONDA_BACKUP_OBJCOPY=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-objcopy
+CONDA_BACKUP__CONDA_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata_x86_64_conda_cos7_linux_gnu
+CONDA_BACKUP_CFLAGS=-march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/neepaw/anaconda3/include
+CONDA_BACKUP_LD=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-ld
+CONDA_BACKUP_GCC=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-gcc
+CONDA_BACKUP_CC=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-cc
+CONDA_BACKUP_NM=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-nm
+CONDA_BACKUP_LD_GOLD=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-ld.gold
+CONDA_BACKUP_CXXFLAGS=-fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/neepaw/anaconda3/include
+CONDA_BACKUP_host_alias=x86_64-conda-linux-gnu
+CONDA_BACKUP_RANLIB=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-ranlib
+CONDA_BACKUP_GCC_RANLIB=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-gcc-ranlib
+CONDA_BACKUP_READELF=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-readelf
+CONDA_BACKUP_GCC_AR=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-gcc-ar
+CONDA_BACKUP_CXXFILT=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-c++filt
+CONDA_BACKUP_CMAKE_PREFIX_PATH=/home/neepaw/anaconda3:/home/neepaw/anaconda3/x86_64-conda-linux-gnu/sysroot/usr
+CONDA_BACKUP_OBJDUMP=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-objdump
+CONDA_BACKUP_STRINGS=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-strings
+CONDA_BACKUP_CC_FOR_BUILD=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-cc
+CONDA_BACKUP_CPPFLAGS=-DNDEBUG -D_FORTIFY_SOURCE=2 -O2 -isystem /home/neepaw/anaconda3/include
+CONDA_BACKUP_CXX_FOR_BUILD=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-c++
+CONDA_BACKUP_CXX=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-c++
+CONDA_PREFIX_1=/home/neepaw/anaconda3
+VSCODE_INJECTION=1
+ZDOTDIR=/home/neepaw
+USER_ZDOTDIR=/home/neepaw
+TERM=xterm-256color
+CONDA_PREFIX_2=/home/neepaw/anaconda3/envs/seminar
+CONDA_BACKUP_CMAKE_ARGS=-DCMAKE_LINKER=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-ld -DCMAKE_STRIP=/home/neepaw/anaconda3/bin/x86_64-conda-linux-gnu-strip
+PS1=(seminar) (base) %(?:%{[01;32m%}%1{➜%} :%{[01;31m%}%1{➜%} ) %{[36m%}%c%{[00m%} $(git_prompt_info)
