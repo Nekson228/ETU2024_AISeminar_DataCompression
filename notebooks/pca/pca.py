@@ -71,4 +71,4 @@ class PCA(BaseEstimator, TransformerMixin):
     def inverse_transform(self, X: np.ndarray) -> np.ndarray:
         check_array(X)
 
-        return self.mean_ + X @ self.components_.T
+        return self.mean_ + (X @ self.components_.T) * self.std_
