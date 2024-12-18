@@ -40,6 +40,7 @@ class PCA(BaseEstimator, TransformerMixin):
         check_array(X)
 
         self._mean_, self._std_ = np.mean(X, axis=0), np.std(X, axis=0)
+        self._std_[self._std_ == 0] = 1
         X = (X - self.mean_) / self.std_
 
         cov = np.cov(X.T)
