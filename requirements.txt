@@ -1,6 +1,7 @@
-numpy ~= 1.26.4
-matplotlib ~= 3.9.2
-pytorch ~= 2.5.1
-scikit-learn ~= 1.5.1
+numpy~=1.26.4
+matplotlib~=3.9.2
+scikit-learn~=1.5.1
 notebook ~= 7.2.2
 pandas ~= 2.2.3
+torch~=2.0.1
+tqdm ~= 4.66.5
