@@ -420,6 +420,132 @@ $$
 
 ### Постановка задачи
 
+Дан **центрированный неразмеченный** датасет из **независимых и одинаково распределенных (*i.i.d*)** данных $X = \{\boldsymbol{x}_i\}_{i=1}^N,\:\boldsymbol{x}_i\in\mathbb{R}^D$. 
+
+Также дано (нелинейное) преобразование $\phi: \mathbb{R} \to \mathbb{H}$, где $\mathbb{H}$ - гильбертово пространство; <br> или функция (ядро) $k: \mathbb{R}^D \times \mathbb{R}^D \to \mathbb{R}$, такая что $k(\boldsymbol{x}, \boldsymbol{y}) = \langle\phi(\boldsymbol{x}), \phi(\boldsymbol{y})\rangle_{\mathbb{H}}$. 
+
+Цель - найти линейное подпространство в $\mathbb{H}$ размерности $P$, на которое $\{\phi(\boldsymbol{x}_i)\}_{i=1}^N$ проецируются **оптимально**. т.е. расстояние в исходном пространстве между $x_i$ и его проекцией будет минимально.
+
+**Утверждение:** по произвольной функции $\phi$ можно построить ядро $k$. Функция $k$ тогда будет положительно определенной, т.е. матрица Грама $K$ (матрица, где $K_{ij}=\langle x_i, x_j \rangle$) будет положительно определенной.
+
+**Утверждение (*Moore-Aronsajn theorem*):** по произвольной положительно определенной функции $k$ можно построить преобразование $\phi$ и гильбертово пространство $\mathbb{H}$, так что $k(\boldsymbol{x}, \boldsymbol{y}) = \langle\phi(\boldsymbol{x}), \phi(\boldsymbol{y})\rangle_{\mathbb{H}}$.
+
+Пусть $\mathbb{H} = \mathbb{R}^H, \: H \gg D$ (не хотим возиться с бесконечномерным случаем). 
+
+### Наивный подход
+
+1. Вычислить $\{\phi(\boldsymbol{x}_i)\}_{i=1}^N$
+2. Используем PCA на $\{\phi(\boldsymbol{x}_i)\}_{i=1}^N$   
+
+**Проблемы:**
+
+1. Вычисление $\phi(\boldsymbol{x}_i)$ может быть дорогим (и вообще $\phi$ обычно нам не дано, дано только $k$).
+2. Теорема **Moore-Aronsajn** конструктивная, но дает [неприменимые на практике $\phi$](https://en.wikipedia.org/wiki/Reproducing_kernel_Hilbert_space#Moore%E2%80%93Aronszajn_theorem).
+3. Придется работать с матрицей ковариации размера $H \times H$.
+
+### Kernel Trick
+
+Положим, что $\{\phi(\boldsymbol{x}_i)\}_{i=1}^N$ у нас есть и составим из низ $\mathbf{\Phi}$ - матрицу размера $N \times H$. 
+PCA предлагает сформировать матрицу 
+
+$$
+\boldsymbol{\Sigma} = \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\phi(\boldsymbol{x}_i)^T = \frac{1}{N}\mathbf{\Phi}^T\mathbf{\Phi}.
+$$
+
+и найти главные компоненты:
+
+$$
+\boldsymbol{\Sigma}\boldsymbol{w}_p = \lambda_i\boldsymbol{w}_p \hspace{1cm} p=1,2,\ldots,P.
+$$
+
+Подставим $\boldsymbol{\Sigma}$:
+
+$$
+\frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\phi(\boldsymbol{x}_i)^T\boldsymbol{w}_p = \lambda_p\boldsymbol{w}_p \\
+\frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\langle\phi(\boldsymbol{x}_i), \boldsymbol{w}_p\rangle_{\mathbb{H}} = \lambda_p\boldsymbol{w}_p.
+$$
+
+То есть главные компоненты $\boldsymbol{w}_p$ можно представить как линейную комбинацию $\phi(\boldsymbol{x}_i)$:
+
+$$
+\boldsymbol{w}_p = \sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j) \hspace{1cm} \alpha_{p,j}= \langle\phi(\boldsymbol{x}_j), \boldsymbol{w}_p\rangle_{\mathbb{H}}.
+$$
+
+Подставим это в уравнение для $\boldsymbol{w}_p$:
+
+$$
+\begin{align*}
+& \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\langle\phi(\boldsymbol{x}_i), \sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j)\rangle_{\mathbb{H}} = \lambda_p\frac{1}{N}\sum_{i=1}^N\alpha_{p,i}\phi(\boldsymbol{x}_i), \\
+& \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\phi(\boldsymbol{x}_i)^T\sum_{j=1}^N\phi(\boldsymbol{x}_j)\alpha_{p,j} = \lambda_p\sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j), \\ 
+& \frac{1}{N}\mathbf{\Phi}^T\mathbf{\Phi}\mathbf{\Phi}^T\boldsymbol{\alpha}_p = \lambda_p\mathbf{\Phi}^T\boldsymbol{\alpha}_p, \\
+& \mathbf{\Phi}^T(\mathbf{\Phi}\mathbf{\Phi}^T\boldsymbol{\alpha}_p - N\lambda_p\boldsymbol{\alpha}_p) = 0 \\ 
+\end{align*}
+$$
+
+Это выполнено, если $\boldsymbol{\alpha}_p$ - решение еще одной задачи собственных значений:
+
+$$
+\mathbf{K}\boldsymbol{\alpha}_p = N\lambda_p\boldsymbol{\alpha}_p, \hspace{1cm} \mathbf{K} = \mathbf{\Phi}\mathbf{\Phi}^T.
+$$
+
+Заметим, что $\mathbf{K}$ - матрица $N \times N$, причем $K_{ij} = k(\boldsymbol{x}_i, \boldsymbol{x}_j)$.
+
+Таким образом, для нахождения главных компонент $\boldsymbol{\omega}_p$ достаточно решить задачу выше.
+
+### Проекции на главные компоненты
+
+Проекции на главные компоненты вычисляются даже без знания $\phi$:
+
+$$
+\begin{align*}
+\boldsymbol{z}_{ij} &= \langle\phi(\boldsymbol{x}_i), \boldsymbol{w}_j\rangle_{\mathbb{H}} \\
+&= \boldsymbol{\omega}_j^T\phi(\boldsymbol{x}_i) \\
+&= \sum_{k=1}^N\alpha_{j,k}\phi(\boldsymbol{x}_k)^T\phi(\boldsymbol{x}_i) \\
+&= \sum_{k=1}^N\alpha_{j,k}k(\boldsymbol{x}_k, \boldsymbol{x}_i) \\
+&= \sum_{k=1}^N\alpha_{j,k}\mathbf{K}_{ki} = \sum_{k=1}^N\alpha_{j,k}\mathbf{K}_{ik} = \mathbf{K}_i\boldsymbol{\alpha}_j.
+\end{align*}
+$$
+
+Таким образом проекции на главные компоненты вычисляются как $\mathbf{Z} = \mathbf{K}\boldsymbol{\alpha}$, где $\boldsymbol{\alpha}$ - матрица собственных векторов-столбцов $\mathbf{K}$.
+
+### Центрирование образов
+
+Выжно заметить, что не смотря на то, что прообразы $\boldsymbol{x}_i$ центрированы, образы $\phi(\boldsymbol{x}_i)$ в общем случае нет. Поэтому, чтобы применить KPCA, необходимо центрировать образы $\phi(\boldsymbol{x}_i)$:
+
+$$
+\tilde{\phi}(\boldsymbol{x}) = \phi(\boldsymbol{x}) - \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i).
+$$
+
+Тогда вместо $k$ используем $\tilde{k}(\boldsymbol{x}, \boldsymbol{y}) = \langle\tilde{\phi}(\boldsymbol{x}), \tilde{\phi}(\boldsymbol{y})\rangle_{\mathbb{H}}$, то есть:
+
+$$
+\tilde{k}(\boldsymbol{x}, \boldsymbol{y}) = k(\boldsymbol{x}, \boldsymbol{y}) - \frac{1}{N}\sum_{i=1}^N\left(k(\boldsymbol{x}, \boldsymbol{x}_i) - k(\boldsymbol{x}_i, \boldsymbol{y})\right) + \frac{1}{N^2}\sum_{i=1}^N\sum_{j=1}^Nk(\boldsymbol{x}_i, \boldsymbol{x}_j).
+$$
+
+В таком случае матрица $\mathbf{K}$ вычисляется как:
+
+$$
+\tilde{\mathbf{K}} = \left(\mathbf{E} - \frac{1}{N}\mathbf{1}\mathbf{1}^T\right)\mathbf{K}\left(\mathbf{E} - \frac{1}{N}\mathbf{1}\mathbf{1}^T\right), \hspace{1cm} \mathbf{1}= \begin{bmatrix} 1 & 1 & \ldots & 1 \end{bmatrix}^T.
+$$
+
+### Практическое применение
+
+На практике чаще всего используется ядро Гаусса (*Radial Basis Function, RBF*):
+
+$$
+k(\boldsymbol{x}, \boldsymbol{y}) = \exp\left(-\frac{\|\boldsymbol{x} - \boldsymbol{y}\|^2}{2\sigma^2}\right) = \exp\left(-\gamma\|\boldsymbol{x} - \boldsymbol{y}\|^2\right).
+$$
+
+Гильбертово пространство $\mathbb{H}$ в таком случае бесконечномерно, что позволяет "распутывать" сложные нелинейные зависимости в данных. 
+
+Проблема такого ядра заключается в плохой обусловленности матрицы $\mathbf{K}$ (ее диагонализация сложна и неустойчива). Альтернатива - [ядра Матерна](https://scikit-learn.org/1.5/modules/generated/sklearn.gaussian_process.kernels.Matern.html) - обобщение ядра Гаусса.
+
+Также есть и другие ядра:
+
+- Полиномиальное: $k(\boldsymbol{x}, \boldsymbol{y}) = (\gamma\boldsymbol{x}^T\boldsymbol{y} + r)^d$.
+- Сигмоидальное: $k(\boldsymbol{x}, \boldsymbol{y}) = \tanh(\gamma\boldsymbol{x}^T\boldsymbol{y} + r)$.
+- Линейное: $k(\boldsymbol{x}, \boldsymbol{y}) = \boldsymbol{x}^T\boldsymbol{y}$ (просто PCA).
+
 
 
 ## Список литературы
