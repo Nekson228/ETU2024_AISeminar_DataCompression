@@ -22,32 +22,47 @@ class Kernel(ABC):
 
 
 class LinearKernel(Kernel):
-    """Linear kernel implementation."""
+    """
+    Linear kernel implementation.
+
+    The linear kernel is defined as:
+    K(x, y) = x^T y
+    """
 
     def __call__(self, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
         return np.dot(X, Y.T)
 
 
 class PolynomialKernel(Kernel):
-    """Polynomial kernel implementation."""
+    """
+    Polynomial kernel implementation.
 
-    def __init__(self, degree: int = 3, coef0: int = 1) -> None:
+    The polynomial kernel is defined as:
+    K(x, y) = (gamma * x^T y + coef0)^degree
+    """
+
+    def __init__(self, gamma: float = 1., degree: int = 3, coef0: int = 1) -> None:
+        self.gamma = gamma
         self.degree = degree
         self.coef0 = coef0
 
     def __call__(self, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
-        return (np.dot(X, Y.T) + self.coef0) ** self.degree
+        return (self.gamma * X @ Y.T + self.coef0) ** self.degree
 
 
 class RBFKernel(Kernel):
-    """RBF (Gaussian) kernel implementation."""
+    """
+    RBF (Gaussian) kernel implementation.
+
+    The RBF kernel is defined as:
+    K(x, y) = exp(-gamma * ||x - y||^2)
+    """
 
     def __init__(self, gamma: float = 1.0) -> None:
         self.gamma = gamma
 
     def __call__(self, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
-        sq_dists = -2 * np.dot(X, Y.T) + np.sum(X**2,
-                                                axis=1)[:, np.newaxis] + np.sum(Y**2, axis=1)
+        sq_dists = np.linalg.norm(X[:, np.newaxis] - Y, axis=2) ** 2
         return np.exp(-self.gamma * sq_dists)
 
 
