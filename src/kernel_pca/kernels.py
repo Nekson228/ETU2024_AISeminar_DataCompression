@@ -62,7 +62,7 @@ class RBFKernel(Kernel):
         self.gamma = gamma
 
     def __call__(self, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
-        sq_dists = np.linalg.norm(X[:, np.newaxis] - Y, axis=2) ** 2
+        sq_dists = np.sum(X ** 2, axis=1)[:, np.newaxis] + np.sum(Y ** 2, axis=1) - 2 * np.dot(X, Y.T)
         return np.exp(-self.gamma * sq_dists)
 
 
