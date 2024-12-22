@@ -1,5 +1,5 @@
 from typing import Optional, Self
-from kernels import Kernel
+from .kernels import Kernel
 
 import numpy as np
 
