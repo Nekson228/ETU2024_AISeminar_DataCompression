@@ -2,8 +2,10 @@ from typing import Optional, Self
 from .kernels import Kernel
 
 import numpy as np
+import scipy.linalg as la
 
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.exceptions import NotFittedError
 
 
 class KernelPCA(BaseEstimator, TransformerMixin):
@@ -38,16 +40,14 @@ class KernelPCA(BaseEstimator, TransformerMixin):
 
         eigenvalues, eigenvectors = np.linalg.eigh(self.K_)
 
-        idx = np.argsort(eigenvalues)[::-1]
-        self.eigenvalues_ = eigenvalues[idx]
-        self.eigenvectors_ = eigenvectors[:, idx]
+        self.eigenvalues_ = eigenvalues[::-1]
+        self.eigenvectors_ = eigenvectors[:, ::-1]
 
         self.alphas_ = self.eigenvectors_[:, :self.n_components]
         self.lambdas_ = self.eigenvalues_[:self.n_components]
 
         self.X_fit_ = X
 
-        # Compute dual coefficients for inverse transform
         self._fit_inverse_transform()
 
         return self
@@ -73,13 +73,16 @@ class KernelPCA(BaseEstimator, TransformerMixin):
     def _fit_inverse_transform(self) -> None:
         """Compute dual coefficients for an inverse transform using ridge regression."""
         n_samples = self.X_fit_.shape[0]
-        K = self.K_ + self.alpha * np.eye(n_samples)
-        self.dual_coef_ = np.linalg.solve(K, self.X_fit_)
+        X_transformed = self.alphas_ * np.sqrt(self.lambdas_)
+        K = self.kernel(X_transformed)
+        K.flat[::n_samples + 1] += self.alpha
+        self.dual_coef_ = la.solve(K, self.X_fit_, assume_a="pos", overwrite_a=True)
+        self.X_transformed_fit_ = X_transformed
 
     def inverse_transform(self, X_transformed: np.ndarray) -> np.ndarray:
         """Approximate the inverse transformation from feature space to input space."""
         if self.dual_coef_ is None:
-            raise ValueError("The model must be fitted before performing inverse transformation.")
+            raise NotFittedError("The model must be fitted before performing inverse transformation.")
 
-        K = self.kernel(X_transformed, self.alphas_)
+        K = self.kernel(X_transformed, self.X_transformed_fit_)
         return K @ self.dual_coef_
