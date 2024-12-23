@@ -455,23 +455,23 @@ $$
 и найти главные компоненты:
 
 $$
-\boldsymbol{\Sigma}\boldsymbol{w}_p = \lambda_i\boldsymbol{w}_p \hspace{1cm} p=1,2,\ldots,P.
+\boldsymbol{\Sigma}\mathbf{W}_p = \lambda_i\mathbf{W}_p \hspace{1cm} p=1,2,\ldots,P.
 $$
 
 Подставим $\boldsymbol{\Sigma}$:
 
 $$
-\frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\phi(\boldsymbol{x}_i)^T\boldsymbol{w}_p = \lambda_p\boldsymbol{w}_p \\
-\frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\langle\phi(\boldsymbol{x}_i), \boldsymbol{w}_p\rangle_{\mathbb{H}} = \lambda_p\boldsymbol{w}_p.
+\frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\phi(\boldsymbol{x}_i)^T\mathbf{W}_p = \lambda_p\mathbf{W}_p \\
+\frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\langle\phi(\boldsymbol{x}_i), \mathbf{W}_p\rangle_{\mathbb{H}} = \lambda_p\mathbf{W}_p.
 $$
 
-То есть главные компоненты $\boldsymbol{w}_p$ можно представить как линейную комбинацию $\phi(\boldsymbol{x}_i)$:
+То есть главные компоненты $\mathbf{W}_p$ можно представить как линейную комбинацию $\phi(\boldsymbol{x}_i)$:
 
 $$
-\boldsymbol{w}_p = \sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j) \hspace{1cm} \alpha_{p,j}= \langle\phi(\boldsymbol{x}_j), \boldsymbol{w}_p\rangle_{\mathbb{H}}.
+\mathbf{W}_p = \sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j) \hspace{1cm} \alpha_{p,j}= \langle\phi(\boldsymbol{x}_j), \mathbf{W}_p\rangle_{\mathbb{H}}.
 $$
 
-Подставим это в уравнение для $\boldsymbol{w}_p$:
+Подставим это в уравнение для $\mathbf{W}_p$:
 
 $$
 \begin{align*}
@@ -498,7 +498,7 @@ $$
 
 $$
 \begin{align*}
-\boldsymbol{z}_{ij} &= \langle\phi(\boldsymbol{x}_i), \boldsymbol{w}_j\rangle_{\mathbb{H}} \\
+\boldsymbol{z}_{ij} &= \langle\phi(\boldsymbol{x}_i), \mathbf{W}_j\rangle_{\mathbb{H}} \\
 &= \boldsymbol{\omega}_j^T\phi(\boldsymbol{x}_i) \\
 &= \sum_{k=1}^N\alpha_{j,k}\phi(\boldsymbol{x}_k)^T\phi(\boldsymbol{x}_i) \\
 &= \sum_{k=1}^N\alpha_{j,k}k(\boldsymbol{x}_k, \boldsymbol{x}_i) \\
@@ -510,7 +510,7 @@ $$
 
 ### Центрирование образов
 
-Выжно заметить, что не смотря на то, что прообразы $\boldsymbol{x}_i$ центрированы, образы $\phi(\boldsymbol{x}_i)$ в общем случае нет (например, при $\phi(x)=x^2$). Поэтому, чтобы применить KPCA, необходимо центрировать образы $\phi(\boldsymbol{x}_i)$:
+Выжно заметить, что не смотря на то, что прообразы $\boldsymbol{x}_i$ центрированы, образы $\phi(\boldsymbol{x}_i)$ в общем случае нет (например, при $\phi(x)$). Поэтому, чтобы применить KPCA, необходимо центрировать образы $\phi(\boldsymbol{x}_i)$:
 
 $$
 \tilde{\phi}(\boldsymbol{x}) = \phi(\boldsymbol{x}) - \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i).
@@ -549,11 +549,74 @@ $$
 **Замечание:** Проецированные вектора в исходном прострнастве $\tilde{x}$, которые получались естественным образом в PCA, в KPCA не так просто получить. Для нахождения $\tilde{x}$ решается задача оптимизации:
 
 $$
-\min_{\tilde{x}}\|\phi(\boldsymbol{\tilde{x}}) - \sum_{j=1}^P\boldsymbol{w}_j\langle\phi(\boldsymbol{x}), \boldsymbol{w}_j\rangle_{\mathbb{H}}\|^2.
+\min_{\tilde{x}}\|\phi(\boldsymbol{\tilde{x}}) - \sum_{j=1}^P\mathbf{W}_j\langle\phi(\boldsymbol{x}), \mathbf{W}_j\rangle_{\mathbb{H}}\|^2.
 $$
 
 Математика, стоящая за итоговой реализацией обратного преобразования не будет рассмотрена в данной работе. Информацию можно найти в [статье](https://papers.nips.cc/paper/2003/file/ac1ad983e08ad3304a97e147f522747e-Paper.pdf).
 
+
+## AutoEncoders (*AEs*)
+
+### Постановка задачи
+
+Дан **неразмеченный** датасет из **независимых и одинаково распределенных (*i.i.d*)** данных $X = \{\boldsymbol{x}_i\}_{i=1}^N,\:\boldsymbol{x}_i\in\mathbb{R}^D$.
+
+Цель - путем нелинейных преобразований найти сжатое представление данных $\boldsymbol{z}_i\in\mathbb{R}^M,\:M<D$, такое чтобы восстановленные данные $\tilde{\boldsymbol{x}}_i$ были близки к исходным $\boldsymbol{x}_i$.
+
+Построение нелинейной зависимости - задача, с которой хорошо справляются нейронные сети, в частности - MLP.
+
+### Архтиектура автоэнкодера
+
+**Encoder**: $f_{\boldsymbol{\theta}}: \mathbb{R}^D \to \mathbb{R}^M$: $\boldsymbol{z} = f_{\boldsymbol{\theta}}(\boldsymbol{x})$, где $\boldsymbol{\theta}$ - параметры сети. $f_{\boldsymbol{\theta}}$ состоит из композиции нелинейных преобразований: 
+$$
+f_{\boldsymbol{\theta}} = f_L\circ f_{L-1}\circ\ldots\circ f_1, \hspace{1cm}
+f_i = \sigma_{\text{E}i}(\mathbf{W}_{\text{E}i}\boldsymbol{z}_{i-1} + \boldsymbol{b}_{\text{E}i}),
+$$
+
+где $\sigma_{\text{E}i}$ - нелинейная функция активации, $\mathbf{W}_{\text{E}i}$ - матрица весов, $\boldsymbol{b}_{\text{E}i}$ - вектор смещения.
+
+**Decoder**: $g_{\boldsymbol{\phi}}: \mathbb{R}^M \to \mathbb{R}^D$: $\tilde{\boldsymbol{x}} = g_{\boldsymbol{\theta}}(\boldsymbol{z})$, где $\boldsymbol{\theta}$ - параметры сети. $g_{\boldsymbol{\theta}}$ состоит из композиции нелинейных преобразований:
+
+$$
+g_{\boldsymbol{\phi}} = g_L\circ g_{L-1}\circ\ldots\circ g_1, \hspace{1cm}
+g_i = \sigma_{\text{D}i}(\mathbf{W}_{\text{D}i}\boldsymbol{z}_{i-1} + \boldsymbol{b}_{\text{D}i}),
+$$
+
+где $\sigma_{\text{D}i}$ - нелинейная функция активации, $\mathbf{W}_{\text{D}i}$ - матрица весов, $\boldsymbol{b}_{\text{D}i}$ - вектор смещения.
+
+Полная архитектура автоэнкодера:
+
+$$
+\begin{align*}
+    &\boldsymbol{z} = f_{\boldsymbol{\theta}}(\boldsymbol{x}), \\
+    &\tilde{\boldsymbol{x}} = g_{\boldsymbol{\phi}}(\boldsymbol{z}).
+\end{align*}
+$$
+
+### Обучение автоэнкодера
+
+Обучение автоэнкодера происходит путем минимизации функции потерь, называемой ошибкой реконструкции (*reconstruction error*):
+
+$$
+\mathcal{L}(\boldsymbol{\theta}, \boldsymbol{\phi}) = \frac{1}{N}\sum_{i=1}^N\|\boldsymbol{x}_i - \tilde{\boldsymbol{x}}_i\|^2_2 = \frac{1}{N}\sum_{i=1}^N\|\boldsymbol{x}_i - g_{\boldsymbol{\phi}}(f_{\boldsymbol{\theta}}(\boldsymbol{x}_i))\|^2_2.
+$$
+
+### Аналогия с PCA
+
+Мы рассмотрели PCA с точки зрения максимизации дисперсии данных. Также можно рассмотреть PCA с точки зрения минимизации ошибки реконструкции (и прийти к тем же результатам):
+
+$$
+\mathcal{L}(\boldsymbol{\theta}, \boldsymbol{\phi}) = \frac{1}{N}\sum_{i=1}^N\|\boldsymbol{x}_i - \tilde{\boldsymbol{x}}_i\|^2_2 = \frac{1}{N}\sum_{i=1}^N\|\boldsymbol{x}_i - \mathbf{B}\mathbf{B}^T\boldsymbol{x}_i\|^2_2.
+$$
+
+
+В случае, если
+
+$$
+f_{\boldsymbol{\theta}}(\boldsymbol{x}) = \mathbf{W}_{\text{E}}\boldsymbol{x}, \hspace{1cm} g_{\boldsymbol{\phi}}(\boldsymbol{z}) = \mathbf{W}_{\text{D}}\boldsymbol{z},
+$$
+
+то $\mathbf{W}_{\text{E}} = \mathbf{B}^T,\:\mathbf{W}_{\text{D}} = \mathbf{B}$, и автоэнкодер эквивалентен PCA.
 
 ## Список литературы
 
