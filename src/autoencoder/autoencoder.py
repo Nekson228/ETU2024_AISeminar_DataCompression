@@ -27,7 +27,7 @@ class MNISTAutoEncoder(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.encoder(self.decoder(x))
+        return self.decoder(self.encoder(x))
 
     def encode(self, x: torch.Tensor) -> torch.Tensor:
         return self.encoder(x)
