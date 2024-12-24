@@ -601,6 +601,12 @@ $$
 \mathcal{L}(\boldsymbol{\theta}, \boldsymbol{\phi}) = \frac{1}{N}\sum_{i=1}^N\|\boldsymbol{x}_i - \tilde{\boldsymbol{x}}_i\|^2_2 = \frac{1}{N}\sum_{i=1}^N\|\boldsymbol{x}_i - g_{\boldsymbol{\phi}}(f_{\boldsymbol{\theta}}(\boldsymbol{x}_i))\|^2_2.
 $$
 
+В случаях, когда автоэнкодер используется для снижения размерности, и на выходе автоэнкодера $\tilde{\boldsymbol{x}} \in [0, 1]^D$, то лучше использовать бинарную кросс-энтропию:
+
+$$
+\mathcal{L}(\boldsymbol{\theta}, \boldsymbol{\phi}) = \frac{1}{N}\sum_{i=1}^N\sum_{j=1}^D\left(x_{ij}\log\tilde{x}_{ij} + (1 - x_{ij})\log(1 - \tilde{x}_{ij})\right).
+$$
+
 ### Аналогия с PCA
 
 Мы рассмотрели PCA с точки зрения максимизации дисперсии данных. Также можно рассмотреть PCA с точки зрения минимизации ошибки реконструкции (и прийти к тем же результатам):
@@ -608,7 +614,6 @@ $$
 $$
 \mathcal{L}(\boldsymbol{\theta}, \boldsymbol{\phi}) = \frac{1}{N}\sum_{i=1}^N\|\boldsymbol{x}_i - \tilde{\boldsymbol{x}}_i\|^2_2 = \frac{1}{N}\sum_{i=1}^N\|\boldsymbol{x}_i - \mathbf{B}\mathbf{B}^T\boldsymbol{x}_i\|^2_2.
 $$
-
 
 В случае, если
 
