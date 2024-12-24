@@ -1,1 +1,2 @@
 from .mnist_autoencoder import MNISTAutoEncoder
+from .fashion_autoencoder import FashionDenoisingAutoEncoder
