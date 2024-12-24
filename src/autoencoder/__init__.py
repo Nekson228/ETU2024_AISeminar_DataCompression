@@ -1,1 +1,1 @@
-from .autoencoder import MNISTAutoEncoder
+from .mnist_autoencoder import MNISTAutoEncoder
