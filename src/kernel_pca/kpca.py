@@ -9,7 +9,8 @@ from sklearn.exceptions import NotFittedError
 
 
 class KernelPCA(BaseEstimator, TransformerMixin):
-    def __init__(self, n_components: int = 2, kernel: Optional[Kernel] = None, alpha: float = 1.0) -> None:
+    def __init__(self, n_components: int = 2, kernel: Optional[Kernel] = None,
+                 fit_inverse_transform: bool = False, alpha: float = 1.0) -> None:
         """
         Parameters:
         - n_components: principal components amount to keep.
@@ -32,6 +33,8 @@ class KernelPCA(BaseEstimator, TransformerMixin):
         self.X_fit_: np.ndarray | None = None
         self.dual_coef_: np.ndarray | None = None
 
+        self.fit_inverse_transform = fit_inverse_transform
+
     def fit(self, X: np.ndarray, y: Optional[np.ndarray] = None) -> Self:
         """Fit the Kernel PCA model on the data."""
         K = self.kernel(X, X)
@@ -48,7 +51,9 @@ class KernelPCA(BaseEstimator, TransformerMixin):
 
         self.X_fit_ = X
 
-        self._fit_inverse_transform()
+
+        if self.fit_inverse_transform:
+            self._fit_inverse_transform()
 
         return self
 
@@ -81,6 +86,8 @@ class KernelPCA(BaseEstimator, TransformerMixin):
 
     def inverse_transform(self, X_transformed: np.ndarray) -> np.ndarray:
         """Approximate the inverse transformation from feature space to input space."""
+        if not self.fit_inverse_transform:
+            raise ValueError("Inverse transformation was not enabled during model instantiation.")
         if self.dual_coef_ is None:
             raise NotFittedError("The model must be fitted before performing inverse transformation.")
 
