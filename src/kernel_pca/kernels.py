@@ -39,7 +39,7 @@ class LinearKernel(Kernel):
     """Linear kernel implementation."""
 
     def _compute_kernel(self, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
-        return np.dot(X, Y.T)
+        return X @ Y.T
 
 
 class PolynomialKernel(Kernel):
