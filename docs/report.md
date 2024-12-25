@@ -648,6 +648,10 @@ https://stats.stackexchange.com/questions/186184/does-dimensionality-curse-effec
 
 https://education.yandex.ru/handbook/ml/article/linear-models
 
+https://education.yandex.ru/handbook/ml/article/variational-autoencoder-(vae)
+
 https://habr.com/ru/articles/799001/
+
+https://www.youtube.com/watch?v=Y2YTeUi17FI&t=720s&ab_channel=SergeyNikolenko
 
 "Mathematics for Machine Learning" 2020 - Marc Peter Deisenroth, A. Aldo Faisal, Cheng Soon Ong
