@@ -10,8 +10,8 @@
 2. [Мотивация](#мотивация)
 3. [Методы понижения размерности: Обзор и Классификация](#методы-понижения-размерности-обзор-и-классификация)
 4. [Principal Component Analysis (*PCA*)](#principal-component-analysis-pca)
-5. [Kernel Principal Component Analysis (*KPCA*)](#linear-discriminant-analysis-lda)
-6. [AutoEncoders (*AEs*)](#autoencoders)
+5. [Kernel Principal Component Analysis (*KPCA*)](#kernel-principal-component-analysis-kpca)
+6. [AutoEncoders (*AEs*)](#autoencoders-aes)
 7. [Variational AutoEncoders (*VAEs*)](#variational-autoencoders-vaes)
 8. [Сравнительный анализ методов](#сравнительный-анализ-методов)
 9. [Заключение](#заключение)
@@ -622,6 +622,19 @@ f_{\boldsymbol{\theta}}(\boldsymbol{x}) = \mathbf{W}_{\text{E}}\boldsymbol{x}, \
 $$
 
 то $\mathbf{W}_{\text{E}} = \mathbf{B}^T,\:\mathbf{W}_{\text{D}} = \mathbf{B}$, и автоэнкодер эквивалентен PCA.
+
+### Практическое применение
+
+
+## Variational AutoEncoders (*VAEs*)
+
+
+## Полезные ссылки
+
+[Качество автоэнкодера в зависимости от количества эпох](https://github.com/ChaitanyaK77/Advanced_Image_Reconstruction_Autoencoders./tree/main)
+
+[Сверточный автоэнкодер на изображениях номеров машин](https://medium.com/@olga.mindlina/autoencoders-practical-use-for-image-denoising-image-recovering-and-new-image-generation-8a06885eeb69)
+
 
 ## Список литературы
 
