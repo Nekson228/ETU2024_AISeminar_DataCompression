@@ -868,8 +868,8 @@ $$
     & \boldsymbol{z}_j \sim \boldsymbol{\mathcal{N}}( \boldsymbol{z}_j \mid \mu_{\boldsymbol{x}j}, \sigma_{\boldsymbol{x}j}^2) \\
     & \Leftrightarrow 
     \begin{cases}
-        & \boldsymbol{u}_j \sim \boldsymbol{\mathcal{N}}(0, 1) \\
-        & \boldsymbol{z}_j = \mu_{\boldsymbol{x}j} + \sigma_{\boldsymbol{x}j}^2\boldsymbol{u}_j.  
+        & \boldsymbol{\varepsilon}_j \sim \boldsymbol{\mathcal{N}}(0, 1) \\
+        & \boldsymbol{z}_j = \mu_{\boldsymbol{x}j} + \sigma_{\boldsymbol{x}j}\boldsymbol{\varepsilon}_j.  
     \end{cases}
 \end{align*}
 $$
@@ -877,7 +877,7 @@ $$
 ### Архитектура VAE
 
 1. **Энкодер**:
-    - Вход: $\boldsymbol{x} \in \mathbb{R}^D$ и $\boldsymbol{u} \sim \boldsymbol{\mathcal{N}}(\mathbf{0}, \mathbf{E}_{\text{M}})$.
+    - Вход: $\boldsymbol{x} \in \mathbb{R}^D$ и $\boldsymbol{\varepsilon} \sim \boldsymbol{\mathcal{N}}(\mathbf{0}, \mathbf{E}_{\text{M}})$.
     - Выход: $\boldsymbol{\mu}_{\boldsymbol{x}}, \boldsymbol{\sigma}_{\boldsymbol{x}}^2 \in \mathbb{R}^M$.
 2. **Декодер**:
     - Вход: $\boldsymbol{z} \in \mathbb{R}^M$.
@@ -885,6 +885,20 @@ $$
 
 ### Детали реализации
 
+Поскольку $\forall i \: 0 < \boldsymbol{\sigma}_{\boldsymbol{xi}}^2 \ll 1$ - маленькие числа, которые могут привести к числовым неустойчивостям, мы можем использовать логарифмированную версию $\boldsymbol{\sigma}_{\boldsymbol{xi}}^2$:
+
+$$
+\log\boldsymbol{\sigma}_{\boldsymbol{xi}}^2  \in \mathbb{R}^M.
+$$
+
+И при репараметризации:
+
+$$
+\begin{align*}
+    & \boldsymbol{\varepsilon}_j \sim \boldsymbol{\mathcal{N}}(0, 1) \\
+    & \boldsymbol{z}_j = \mu_{\boldsymbol{x}j} + \exp\left(\frac{1}{2}\log\boldsymbol{\sigma}_{\boldsymbol{xi}}^2 \right)\boldsymbol{\varepsilon}_j.
+\end{align*}
+$$
 
 ## Полезные ссылки
 
