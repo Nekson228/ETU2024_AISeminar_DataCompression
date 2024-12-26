@@ -628,6 +628,261 @@ $$
 
 ## Variational AutoEncoders (*VAEs*)
 
+### Постановка задачи
+
+Дан **неразмеченный** датасет из **независимых и одинаково распределенных (*i.i.d*)** данных $X = \{\boldsymbol{x}_i\}_{i=1}^N,\:\boldsymbol{x}_i\in\mathbb{R}^D$.
+
+Цель - обучить автоэнкодер так, чтобы его скрытое представление $\boldsymbol{z}_i \in \mathbb{R}^M$ было распределено по некоторому заданному распределению. Более конкретно, мы хотим, чтобы все латентное подпространство покрывало большую часть носителя $p(\mathbf{z})=\boldsymbol{\mathcal{N}}(\mathbf{z} \mid \mathbf{0}, \mathbf{E})$, а каждое конкретное $\boldsymbol{z}_i$ было сэмплировано из нормального распределения со своими параметрами $\boldsymbol{\mathcal{N}}(\boldsymbol{\mu}_i, \boldsymbol{\sigma}_i^2)$.
+
+Построение генеративной модели, в нашем случае - умение сэмплировать объекты, близкие к объектам из обучающей выборки $X$.
+
+### Интуиция 
+
+**Идея:** $f_{\boldsymbol{\theta}}(\boldsymbol{x}) = \boldsymbol{\psi}_{\boldsymbol{x}} = \left(\boldsymbol{\mu}_{\boldsymbol{x}}, \boldsymbol{\sigma}_{\boldsymbol{x}}^2\right)$ - параметры нормального распределения, $\boldsymbol{\sigma}_{\boldsymbol{x}}^2 = \operatorname{diag}(\begin{bmatrix} \sigma_{\boldsymbol{x}1}^2 & \sigma_{\boldsymbol{x}2}^2 & \ldots & \sigma_{\boldsymbol{x}M}^2 \end{bmatrix})$ - диагональная матрица ковариации, $\boldsymbol{\mu}_{\boldsymbol{x}} = \begin{bmatrix} \mu_{\boldsymbol{x}1} & \mu_{\boldsymbol{x}2} & \ldots & \mu_{\boldsymbol{x}M} \end{bmatrix}$ - средние.
+<br>
+ В свою очередь, $\boldsymbol{z} \sim p(\boldsymbol{z} \mid  \boldsymbol{\psi}_{\boldsymbol{x}}) = \boldsymbol{\mathcal{N}}(\boldsymbol{z} \mid \boldsymbol{\mu}_{\boldsymbol{x}}, \boldsymbol{\sigma}_{\boldsymbol{x}}^2)$, и $\tilde{\boldsymbol{x}} = g_{\boldsymbol{\phi}}(\boldsymbol{z}) \sim p(\boldsymbol{x} \mid \boldsymbol{z})$.
+
+**Проблема 1:** В такой постановке VAE ничем не будет отличаться от обычного AE, поскольку для уменьшения ошибки реконструкции он будет стремиться к тому, чтобы $\boldsymbol{\sigma}_{\boldsymbol{x}}^2 = \mathbf{0}$.
+
+**Решение:** Введем дополнительный член в функционал потерь, который будет штрафовать модель за отклонение параметров нормального распределения от стандартного нормального распределения (пока не знаем какой):
+
+$$
+\mathcal{L}(\boldsymbol{\theta}, \boldsymbol{\phi}) = \text{L}_{\text{rec}} + \alpha \text{L}_{\text{reg}}
+$$
+
+**Проблема 2:** Операция сэмплирования из нормального распределения не дифференцируема, что делает невозможным использование градиентного спуска.
+
+### Правдоподобие $p(\boldsymbol{x})$
+
+Положим, что совместное распределение данных и латентного пространства $p(\boldsymbol{x}, \boldsymbol{z})$ параметризовано некоторым параметром $\phi \in \Phi$ (например, параметрами нейронной сети), и выражается непрерывной по $\phi$ функцией $\forall \boldsymbol{x}, \boldsymbol{z}$:
+
+$$
+p_{\phi}(\boldsymbol{x}, \boldsymbol{z}) = p(\boldsymbol{x}, \boldsymbol{z} \mid \phi)
+$$
+
+Также напомним, как выражается правдоподобие $p(\boldsymbol{x})$:
+
+$$
+\begin{align*}
+    & L(\phi) = \prod_{i=1}^Np_{\phi}(\boldsymbol{x}_i) \\
+    & \log L(\phi) = \sum_{i=1}^N\log p_{\phi}(\boldsymbol{x}_i).
+\end{align*}
+$$
+
+Для построения генеративной модели, мы хотим максимизировать правдоподобие $p(\boldsymbol{x})$, то есть:
+
+$$
+p_{\phi}(\boldsymbol{x}) = \int_{\boldsymbol{z}} p_{\phi}(\boldsymbol{x}, \boldsymbol{z})d\boldsymbol{z} \to \max_{\phi \in \Phi}.
+$$
+
+Для удобства, в дальнейшем опустим параметр $\phi$ в индексе $p_{\phi}(\boldsymbol{x})$.
+
+
+### Теорема Байеса
+
+Напомним теорему байеса (в наших терминах):
+
+$$
+p(\boldsymbol{z} \mid \boldsymbol{x}) = \frac{p(\boldsymbol{x}, \boldsymbol{z})}{p(\boldsymbol{x})} = \frac{p(\boldsymbol{x} \mid \boldsymbol{z})p(\boldsymbol{z})}{p(\boldsymbol{x})}
+$$
+
+Тогда:
+
+$$
+p(\boldsymbol{z} \mid \boldsymbol{x})p(\boldsymbol{x}) = p(\boldsymbol{x} \mid \boldsymbol{z})p(\boldsymbol{z}),
+$$
+
+где $p(\boldsymbol{x})$ - априорное распределение, $p(\boldsymbol{z}) = \boldsymbol{\mathcal{N}}(\boldsymbol{z} \mid \mathbf{0}, \mathbf{E})$ - априорное распределение латентного пространства, $p(\boldsymbol{x} \mid \boldsymbol{z})$ - распределение декодера, $p(\boldsymbol{z} \mid \boldsymbol{x})$ - распределение энкодера.
+
+Хотелось бы сдлеать предположение, о том, что одно из распределений (оба не получится) имеет простое строение. В данном случае, мы можем предположить, что $p(\boldsymbol{x} \mid \boldsymbol{z}) = \boldsymbol{\mathcal{N}}(\boldsymbol{x} \mid g_{\boldsymbol{\phi}}(\boldsymbol{z}), c\mathbf{I})$.
+
+Тогда:
+
+$$
+p(\boldsymbol{z} \mid \boldsymbol{x}) = \frac{p(\boldsymbol{x} \mid \boldsymbol{z})p(\boldsymbol{z})}{p(\boldsymbol{x})} = \frac{\boldsymbol{\mathcal{N}}(\boldsymbol{x} \mid g_{\boldsymbol{\phi}}(\boldsymbol{z}), c\mathbf{I})\boldsymbol{\mathcal{N}}(\boldsymbol{z} \mid \mathbf{0}, \mathbf{E})}{p(\boldsymbol{x})}.
+$$
+
+Получаем сложное распределение $p(\boldsymbol{z} \mid \boldsymbol{x})$, которое мы попробуем аппроксимировать:
+
+$$
+p(\boldsymbol{z} \mid \boldsymbol{x}) \approx q(\boldsymbol{z}) = \boldsymbol{\mathcal{N}}(\boldsymbol{z} \mid \boldsymbol{\mu}_{\boldsymbol{x}}, \boldsymbol{\sigma}_{\boldsymbol{x}}^2).
+$$
+
+### Вариационное приближение
+
+Мы максимизируем правдоподобие $p(\boldsymbol{x})$, которе может быть записано как:
+
+$$
+\begin{align*}
+    \log p(\boldsymbol{x}) &= \log \int_{\boldsymbol{z}} p(\boldsymbol{x}, \boldsymbol{z})d\boldsymbol{z} \\
+    &= \log \int_{\boldsymbol{z}} p(\boldsymbol{x} \mid \boldsymbol{z})p(\boldsymbol{z})d\boldsymbol{z} \\
+    &= \log \int_{\boldsymbol{z}} p(\boldsymbol{z}) p(\boldsymbol{x} \mid \boldsymbol{z})\frac{q(\boldsymbol{z})}{q(\boldsymbol{z})} d\boldsymbol{z} \\
+    &= \log \mathbb{E}_{q(\boldsymbol{z})}\left[\frac{p(\boldsymbol{z}) p(\boldsymbol{x} \mid \boldsymbol{z})}{q(\boldsymbol{z})}\right] \\
+\end{align*}
+$$
+
+Напомним неравенства Йенсена:
+
+$$
+\begin{align*}
+    & g(\mathbb{E}[\xi]) \leq \mathbb{E}[g(\xi)], \hspace{1cm} g(x) \text{ - вогнутая функция}, \\
+    & g(\mathbb{E}[\xi]) \geq \mathbb{E}[g(\xi)], \hspace{1cm} g(x) \text{ - выпуклая функция}.
+\end{align*}
+$$
+
+Применим неравенство Йенсена к $\log$:
+
+$$
+\begin{align*}
+    \log p(\boldsymbol{x}) &= \log \mathbb{E}_{q(\boldsymbol{z})}\left[\frac{p(\boldsymbol{z}) p(\boldsymbol{x} \mid \boldsymbol{z})}{q(\boldsymbol{z})}\right] \\
+    &\geq \mathbb{E}_{q(\boldsymbol{z})}\left[\log\frac{p(\boldsymbol{z}) p(\boldsymbol{x} \mid \boldsymbol{z})}{q(\boldsymbol{z})}\right] \\
+    &= \mathbb{E}_{q(\boldsymbol{z})}\left[\log p(\boldsymbol{x} \mid \boldsymbol{z})\right] - \mathbb{E}_{q(\boldsymbol{z})}\left[\log\frac{q(\boldsymbol{z})}{p(\boldsymbol{z})}\right] \\
+    &= \mathbb{E}_{q(\boldsymbol{z})}\left[\log p(\boldsymbol{x} \mid \boldsymbol{z})\right] - \text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z})),
+\end{align*}
+$$
+
+где $\text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z}))$ - дивергенция Кульбака-Лейблера между $q(\boldsymbol{z})$ и $p(\boldsymbol{z})$.
+
+Мы получили вариационную нижнюю оценку на правдоподобие $p(\boldsymbol{x})$, которая также называется Evidence Lower Bound (*ELBO*):
+
+$$
+\log p(\boldsymbol{x}) \geq \mathbb{E}_{q(\boldsymbol{z})}\left[\log p(\boldsymbol{x} \mid \boldsymbol{z})\right] - \text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z})) \to \max_{q(z)},
+$$
+
+где $p(\boldsymbol{x} \mid \boldsymbol{z}) = \boldsymbol{\mathcal{N}}(\boldsymbol{x} \mid g_{\boldsymbol{\phi}}(\boldsymbol{z}), c\mathbf{I})$, матрица ковариации которого невырождена, поэтому:
+
+$$
+\begin{align*}
+    p(\boldsymbol{x} \mid \boldsymbol{z}) 
+    &= \frac{1}{(2\pi)^{D/2}|c\mathbf{I}|^{1/2}}\exp\left(-\frac{1}{2}(\boldsymbol{x} - g_{\boldsymbol{\phi}}(\boldsymbol{z}))^T(c\mathbf{I})^{-1}(\boldsymbol{x} - g_{\boldsymbol{\phi}}(\boldsymbol{z}))\right) \\
+    &= \frac{1}{(2\pi)^{D/2}c^{D/2}}\exp\left(-\frac{1}{2c}\|\boldsymbol{x} - g_{\boldsymbol{\phi}}(\boldsymbol{z})\|^2_2\right) \\
+    
+    \log(p(\boldsymbol{x} \mid \boldsymbol{z})) 
+    &= -\frac{D}{2}\log(2\pi) - \frac{D}{2}\log(c) - \frac{1}{2c}\|\boldsymbol{x} - g_{\boldsymbol{\phi}}(\boldsymbol{z})\|^2_2 \\
+    &= \text{const} - \frac{1}{2c}\|\boldsymbol{x} - g_{\boldsymbol{\phi}}(\boldsymbol{z})\|^2_2.
+\end{align*}
+$$
+
+Тогда решаем задачу оптимизации:
+
+$$
+\begin{align*}
+    & \mathbb{E}_{q(\boldsymbol{z})}\left[\log p(\boldsymbol{x} \mid \boldsymbol{z})\right] - \text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z})) \\
+    &= -\mathbb{E}_{q(\boldsymbol{z})}\left[\frac{1}{2c}\|\boldsymbol{x} - g_{\boldsymbol{\phi}}(\boldsymbol{z})\|^2_2\right] - \text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z})) \to \max_{q(z)}.
+\end{align*}
+$$
+
+Или:
+
+$$
+\begin{align*}
+    & \mathbb{E}_{q(\boldsymbol{z})}\left[\frac{1}{2c}\|\boldsymbol{x} - g_{\boldsymbol{\phi}}(\boldsymbol{z})\|^2_2\right] + \text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z})) \to \min_{q(z)}.
+\end{align*}
+$$
+
+Вспоминая интуицию, мы получили то, чего и хотели: 
+
+$$
+\begin{align*}
+    & \text{L}_{\text{rec}} = \frac{1}{2c}\|\boldsymbol{x} - g_{\boldsymbol{\phi}}(\boldsymbol{z})\|^2_2, \\
+    & \text{L}_{\text{reg}} = \text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z})).
+\end{align*}
+$$
+
+### Вычисление $\text{L}_{\text{reg}}$
+
+Теперь, давайте приведем $\text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z}))$ к виду, который можно оптимизировать:
+
+$$
+\begin{align*}
+    & \text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z})) =\\
+    &= \text{KL}\left(\boldsymbol{\mathcal{N}}(\boldsymbol{z} \mid \boldsymbol{\mu}_{\boldsymbol{x}}, \boldsymbol{\sigma}_{\boldsymbol{x}}^2) \parallel \boldsymbol{\mathcal{N}}(\boldsymbol{z} \mid \mathbf{0}, \mathbf{E})\right) \\
+    &= \text{KL}\left(\prod_{i=1}^M\boldsymbol{\mathcal{N}}(z_i \mid \mu_{\boldsymbol{x}i}, \sigma_{\boldsymbol{x}i}^2) \parallel \prod_{i=1}^M\boldsymbol{\mathcal{N}}(z_i \mid 0, 1)\right) \\
+    &= \text{KL}\left(\prod_{i=1}^Mq_i(\boldsymbol{z}_i) \parallel \prod_{i=1}^Mp_i(\boldsymbol{z}_i)\right) \\
+    &= \int_{\boldsymbol{z}} \prod_{i=1}^Mq_i(\boldsymbol{z}_i)\log\frac{\prod_{i=1}^Mq_i(\boldsymbol{z}_i)}{\prod_{i=1}^Mp_i(\boldsymbol{z}_i)}d\boldsymbol{z} \\    
+    &= \int_{\boldsymbol{z}} \prod_{i=1}^Mq_i(\boldsymbol{z}_i)(\sum_{i=1}^M\log \frac{q_i(\boldsymbol{z}_i)}{p_i(\boldsymbol{z}_i)})d\boldsymbol{z} \\
+    &= \sum_{j=1}^M\int_{\boldsymbol{z}} \log \frac{q_j(\boldsymbol{z}_j)}{p_j(\boldsymbol{z}_j)} \prod_{i=1}^Mq_i(\boldsymbol{z}_i) d\boldsymbol{z}_1\ldots d\boldsymbol{z}_M \\
+    &= \sum_{j=1}^M \left( \left( \int_{\boldsymbol{z}_j} \log \frac{q_j(\boldsymbol{z}_j)}{p_j(\boldsymbol{z}_j)}q_j(\boldsymbol{z}_j) d\boldsymbol{z}_j \right) \prod_{i\neq j}^M \int_{\boldsymbol{z}_i} q_i(\boldsymbol{z}_i) d\boldsymbol{z}_i \right) \\
+    &= \sum_{j=1}^M \left( \int_{\boldsymbol{z}_j} \log \frac{q_j(\boldsymbol{z}_j)}{p_j(\boldsymbol{z}_j)}q_j(\boldsymbol{z}_j) d\boldsymbol{z}_j \right) \\
+    &= \sum_{j=1}^M \text{KL}(q_j(\boldsymbol{z}_j) \parallel p_j(\boldsymbol{z}_j)) = \ldots
+\end{align*}
+$$ 
+
+Остановимся на секунду и заметим, что мы получили общий факт: $\text{KL}$ между двумя независимыми распределениями (не только нормальными) равна сумме $\text{KL}$ между каждой независимой компонентой этих распределений.
+
+Продолжим:
+
+$$
+\begin{align*}
+    \ldots 
+    &= \sum_{j=1}^M \text{KL}(q_j(\boldsymbol{z}_j) \parallel p_j(\boldsymbol{z}_j)) \\
+    &= \sum_{j=1}^M \text{KL}(\boldsymbol{\mathcal{N}}(z_j \mid \mu_{\boldsymbol{x}j}, \sigma_{\boldsymbol{x}j}^2) \parallel \boldsymbol{\mathcal{N}}(z_j \mid 0, 1)) \\
+    &= \sum_{j=1}^M \left( \int_{z_j} \boldsymbol{\mathcal{N}}(z_j \mid \mu_{\boldsymbol{x}j}, \sigma_{\boldsymbol{x}j}^2)\log\frac{\boldsymbol{\mathcal{N}}(z_j \mid \mu_{\boldsymbol{x}j}, \sigma_{\boldsymbol{x}j}^2)}{\boldsymbol{\mathcal{N}}(z_j \mid 0, 1)}dz_j \right) \\
+    &= \sum_{j=1}^M \left( \mathbb{E}_{q_j(z_j)}\left[\log\boldsymbol{\mathcal{N}}(z_j \mid \mu_{\boldsymbol{x}j}, \sigma_{\boldsymbol{x}j}^2) - \log\boldsymbol{\mathcal{N}}(z_j \mid 0, 1)\right] \right) \\
+    &= \sum_{j=1}^M \left( \mathbb{E}_{q_j(z_j)}\left[ -\frac{1}{2}\log(2\pi\sigma_{\boldsymbol{x}j}^2) - \frac{1}{2\sigma_{\boldsymbol{x}j}^2}(z_j - \mu_{\boldsymbol{x}j})^2 + \frac{1}{2}\log(2\pi) + \frac{1}{2}z_j^2 \right] \right) \\
+    &= \sum_{j=1}^M \left( \mathbb{E}_{q_j(z_j)}\left[ -\frac{1}{2}\log(\sigma_{\boldsymbol{x}j}^2) - \frac{1}{2\sigma_{\boldsymbol{x}j}^2}(z_j - \mu_{\boldsymbol{x}j})^2 + \frac{1}{2}z_j^2 \right] \right) \\
+    &= \sum_{j=1}^M \left( \mathbb{E}_{q_j(z_j)}\left[ -\left(\frac{1}{2}\log(\sigma_{\boldsymbol{x}j}^2) + \frac{\mu_{\boldsymbol{x}j}^2}{2\sigma_{\boldsymbol{x}j}^2} \right) + \left(\frac{1}{2} - \frac{1}{2\sigma_{\boldsymbol{x}j}^2}\right)z_j^2 + \frac{\mu_{\boldsymbol{x}j}}{\sigma_{\boldsymbol{x}j}^2}z_j \right] \right) \\
+    &= \sum_{j=1}^M \left( -\left(\frac{1}{2}\log(\sigma_{\boldsymbol{x}j}^2) + \frac{\mu_{\boldsymbol{x}j}^2}{2\sigma_{\boldsymbol{x}j}^2} \right) + \left(\frac{1}{2} - \frac{1}{2\sigma_{\boldsymbol{x}j}^2}\right)\mathbb{E}_{q_j(z_j)}\left[z_j^2 \right] + \frac{\mu_{\boldsymbol{x}j}}{\sigma_{\boldsymbol{x}j}^2} \mathbb{E}_{q_j(z_j)}\left[z_j \right] \right) = \ldots
+\end{align*}    
+$$
+
+Остается два нехитрых математических ожидания:
+
+$$
+\begin{align*}
+    & \mathbb{E}_{q_j(z_j)}\left[z_j \right] = \mu_{\boldsymbol{x}j}, \\
+    & \mathbb{D}_{q_j(z_j)}\left[z_j \right] = \mathbb{E}_{q_j(z_j)}\left[z_j^2 \right] - \mu_{\boldsymbol{x}j}^2 = \sigma_{\boldsymbol{x}j}^2 \\
+    & \Rightarrow \mathbb{E}_{q_j(z_j)}\left[z_j^2 \right] = \sigma_{\boldsymbol{x}j}^2 + \mu_{\boldsymbol{x}j}^2.
+\end{align*}
+$$
+
+Подставляем:
+
+$$
+\begin{align*}
+    \ldots 
+    &= \sum_{j=1}^M \left( -\frac{1}{2}\log(\sigma_{\boldsymbol{x}j}^2) - \frac{\mu_{\boldsymbol{x}j}^2}{2\sigma_{\boldsymbol{x}j}^2} + \frac{1}{2}\left(1 - \frac{1}{\sigma_{\boldsymbol{x}j}^2}\right)(\sigma_{\boldsymbol{x}j}^2 + \mu_{\boldsymbol{x}j}^2) + \frac{\mu_{\boldsymbol{x}j}}{\sigma_{\boldsymbol{x}j}^2} \mu_{\boldsymbol{x}j} \right) \\
+    &= \sum_{j=1}^M \left( -\frac{1}{2}\log(\sigma_{\boldsymbol{x}j}^2) - \frac{\mu_{\boldsymbol{x}j}^2}{2\sigma_{\boldsymbol{x}j}^2} + \frac{1}{2}\left(\sigma_{\boldsymbol{x}j}^2 + \mu_{\boldsymbol{x}j}^2 - 1 - \frac{\mu_{\boldsymbol{x}j}^2}{\sigma_{\boldsymbol{x}j}^2} \right) + \frac{\mu_{\boldsymbol{x}j}^2}{\sigma_{\boldsymbol{x}j}^2} \right) \\
+    &= \sum_{j=1}^M \left( -\frac{1}{2}\log(\sigma_{\boldsymbol{x}j}^2) + \frac{1}{2}\sigma_{\boldsymbol{x}j}^2 + \frac{1}{2}\mu_{\boldsymbol{x}j}^2 - \frac{1}{2} \right) \\
+    &= \sum_{j=1}^M \frac{1}{2}\left( \sigma_{\boldsymbol{x}j}^2 + \mu_{\boldsymbol{x}j}^2 - 1 - \log(\sigma_{\boldsymbol{x}j}^2) \right) = \text{L}_{\text{reg}}.
+\end{align*}
+$$
+
+Таким образом, мы получили функционал потерь для VAE:
+
+$$
+\begin{align*}
+    & \text{L}_{\text{rec}} = \frac{1}{2c}\|\boldsymbol{x} - g_{\boldsymbol{\phi}}(\boldsymbol{z})\|^2_2, \\
+    & \text{L}_{\text{reg}} = \sum_{j=1}^M \frac{1}{2}\left( \sigma_{\boldsymbol{x}j}^2 + \mu_{\boldsymbol{x}j}^2 - 1 - \log(\sigma_{\boldsymbol{x}j}^2) \right).
+\end{align*}
+$$
+
+Осталось разобраться с последней проблемой - как пропускать градиент через операцию сэмплирования.
+
+### Reparametrization trick
+
+Для "хороших" распределений, например, нормального, можно воспользоваться трюком с переопределением параметров:
+
+$$
+\begin{align*}
+    & \boldsymbol{z}_j \sim \boldsymbol{\mathcal{N}}( \boldsymbol{z}_j \mid \mu_{\boldsymbol{x}j}, \sigma_{\boldsymbol{x}j}^2) \\
+    & \Leftrightarrow 
+    \begin{cases}
+        & \boldsymbol{u}_j \sim \boldsymbol{\mathcal{N}}(0, 1) \\
+        & \boldsymbol{z}_j = \mu_{\boldsymbol{x}j} + \sigma_{\boldsymbol{x}j}^2\boldsymbol{u}_j.  
+    \end{cases}
+\end{align*}
+$$
+
+### Архитектура VAE
+
+1. **Энкодер**:
+    - Вход: $\boldsymbol{x} \in \mathbb{R}^D$ и $\boldsymbol{u} \sim \boldsymbol{\mathcal{N}}(\mathbf{0}, \mathbf{E}_{\text{M}})$.
+    - Выход: $\boldsymbol{\mu}_{\boldsymbol{x}}, \boldsymbol{\sigma}_{\boldsymbol{x}}^2 \in \mathbb{R}^M$.
+2. **Декодер**:
+    - Вход: $\boldsymbol{z} \in \mathbb{R}^M$.
+    - Выход: $\tilde{\boldsymbol{x}} \in \mathbb{R}^D$.
+
 
 ## Полезные ссылки
 
