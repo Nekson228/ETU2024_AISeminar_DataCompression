@@ -632,9 +632,9 @@ $$
 
 Дан **неразмеченный** датасет из **независимых и одинаково распределенных (*i.i.d*)** данных $X = \{\boldsymbol{x}_i\}_{i=1}^N,\:\boldsymbol{x}_i\in\mathbb{R}^D$.
 
-Цель - обучить автоэнкодер так, чтобы его скрытое представление $\boldsymbol{z}_i \in \mathbb{R}^M$ было распределено по некоторому заданному распределению. Более конкретно, мы хотим, чтобы все латентное подпространство покрывало большую часть носителя $p(\mathbf{z})=\boldsymbol{\mathcal{N}}(\mathbf{z} \mid \mathbf{0}, \mathbf{E})$, а каждое конкретное $\boldsymbol{z}_i$ было сэмплировано из нормального распределения со своими параметрами $\boldsymbol{\mathcal{N}}(\boldsymbol{\mu}_i, \boldsymbol{\sigma}_i^2)$.
+Цель - обучить автоэнкодер так, чтобы его скрытое представление $\boldsymbol{z}_i \in \mathbb{R}^M$ было распределено по некоторому заданному распределению. Более конкретно, мы хотим, чтобы все латентное подпространство покрывало большую часть носителя $p(\boldsymbol{z})=\boldsymbol{\mathcal{N}}(\boldsymbol{z} \mid \mathbf{0}, \mathbf{E})$, а каждое конкретное $\boldsymbol{z}_i$ было сэмплировано из нормального распределения со своими параметрами $\boldsymbol{\mathcal{N}}(\boldsymbol{\mu}_i, \boldsymbol{\sigma}_i^2)$.
 
-Построение генеративной модели, в нашем случае - умение сэмплировать объекты, близкие к объектам из обучающей выборки $X$.
+Построение генеративной модели, в нашем случае - умение сэмплировать объекты из $p(\boldsymbol{z})$, близкие к объектам из обучающей выборки $X$.
 
 ### Интуиция 
 
@@ -749,7 +749,7 @@ $$
 \log p(\boldsymbol{x}) \geq \mathbb{E}_{q(\boldsymbol{z})}\left[\log p(\boldsymbol{x} \mid \boldsymbol{z})\right] - \text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z})) \to \max_{q(z)},
 $$
 
-где $p(\boldsymbol{x} \mid \boldsymbol{z}) = \boldsymbol{\mathcal{N}}(\boldsymbol{x} \mid g_{\boldsymbol{\phi}}(\boldsymbol{z}), c\mathbf{I})$, матрица ковариации которого невырождена, поэтому:
+где $p(\boldsymbol{x} \mid \boldsymbol{z}) = \boldsymbol{\mathcal{N}}(\boldsymbol{x} \mid g_{\boldsymbol{\phi}}(\boldsymbol{z}), c\mathbf{I})$, матрица ковариации которого невырождена (при $с \neq 0$), поэтому:
 
 $$
 \begin{align*}
@@ -791,7 +791,7 @@ $$
 
 ### Вычисление $\text{L}_{\text{reg}}$
 
-Теперь, давайте приведем $\text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z}))$ к виду, который можно оптимизировать:
+Теперь, давайте приведем $\text{KL}(q(\boldsymbol{z}) \parallel p(\boldsymbol{z}))$ к виду, который можно вычислить:
 
 $$
 \begin{align*}
