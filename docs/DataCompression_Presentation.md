@@ -32,7 +32,7 @@ class: invert
 
 ## Введение
 
-![invert saturate opacity:.2 bg left fit](resources/simple_dim_red.png)
+![invert saturate opacity:.2 bg left fit](../resources/intro/simple_dim_red.png)
 
 Высокая размерность данных ведет к "проклятию размерности", что усложняет анализ и увеличивает вычислительные затраты. 
 Методы понижения размерности, помогают упростить данные, выделяя ключевые признаки и снижая шум. 
