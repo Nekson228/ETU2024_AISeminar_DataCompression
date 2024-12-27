@@ -1,3 +1,6 @@
 .vscode
 .idea
 **/__pycache__
+presentation/*
+!presentation/main.pdf
+!presentation/*.tex
