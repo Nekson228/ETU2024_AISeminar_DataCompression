@@ -7,3 +7,4 @@ pytorch ~= 2.5.1
 torchvision ~= 0.20.1
 tqdm ~= 4.66.5
 scipy ~= 1.14.1
+imageio ~= 2.36.1
