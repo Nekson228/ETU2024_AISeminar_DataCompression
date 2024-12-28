@@ -1,0 +1,136 @@
+\section{Kernel PCA (\textit{KPCA})}
+
+\begin{frame}[allowframebreaks]{Постановка задачи}
+    Дан центрированный неразмеченный датасет $X = \{\boldsymbol{x}_i\}_{i=1}^N$, $\boldsymbol{x}_i \in \mathbb{R}^D$.
+
+    Задано:
+    \begin{itemize}
+        \item Преобразование $\phi: \mathbb{R}^D \to \mathbb{H}$, где $\mathbb{H}$ — гильбертово пространство.
+        \item Функция (ядро) $k: \mathbb{R}^D \times \mathbb{R}^D \to \mathbb{R}:\quad k(\boldsymbol{x}, \boldsymbol{y}) = \langle\phi(\boldsymbol{x}), \phi(\boldsymbol{y})\rangle_{\mathbb{H}}.$
+    \end{itemize}
+
+    \textbf{Цель:} Найти линейное подпространство в $\mathbb{H}$ размерности $P$, минимизирующее расстояние между $x_i$ и их проекцией.
+
+    \framebreak
+
+    \textbf{Свойства ядерных функций:}
+    \begin{itemize}
+        \item \textbf{Утверждение:} по произвольной функции $\phi$ можно построить ядро $k$ - положительно определенная функция.
+        \item \textbf{Теорема Moore-Aronszajn:} По положительно определённому ядру $k$ можно построить $\phi$ и пространство $\mathbb{H}$.
+        \item Матрица Грама $\mathbf{K} \in \mathbb{R}^{N \times N}$:
+              \begin{equation*}
+                  K_{ij} = k(\boldsymbol{x}_i, \boldsymbol{x}_j).
+              \end{equation*}
+    \end{itemize}
+
+    \textbf{Пространство:} Пусть $\mathbb{H} = \mathbb{R}^H$, где $H \gg D$ (для конечномерного случая).
+\end{frame}
+
+\begin{frame}{Наивный подход}
+    \textbf{Шаги:}
+    \begin{enumerate}
+        \item Вычислить $\{\phi(\boldsymbol{x}_i)\}_{i=1}^N$.
+        \item Применить PCA к $\{\phi(\boldsymbol{x}_i)\}_{i=1}^N$.
+    \end{enumerate}
+
+    \textbf{Проблемы:}
+    \begin{itemize}
+        \item Вычисление $\phi(\boldsymbol{x}_i)$ дорого.
+        \item $\phi$ может быть неизвестным.
+        \item Ковариационная матрица размера $H \times H$, где $H \gg D$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Kernel Trick}
+    \textbf{Подход:}
+    Составим из $\phi(\boldsymbol{x}_i)$ матрицу $\boldsymbol{\Phi}$ ($N \times H$). Матрица ковариации:
+    \begin{equation*}
+        \boldsymbol{\Sigma} = \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\phi(\boldsymbol{x}_i)^T = \frac{1}{N}\boldsymbol{\Phi}^T\boldsymbol{\Phi}.
+    \end{equation*}
+
+    Главные компоненты $\mathbf{\omega}_p \in \mathbb{H}$:
+    \begin{equation*}
+        \boldsymbol{\Sigma}\mathbf{\omega}_p = \lambda_p\mathbf{\omega}_p \quad \text{для } p = 1, 2, \ldots, P.
+    \end{equation*}
+
+    \framebreak
+
+    Подставим $\boldsymbol{\Sigma}$:
+
+    \begin{align*}
+         & \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\phi(\boldsymbol{x}_i)^T\mathbf{\omega}_p =  \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\langle\phi(\boldsymbol{x}_i), \mathbf{\omega}_p\rangle_{\mathbb{H}} = \lambda_p\mathbf{\omega}_p.
+    \end{align*}
+
+    \textbf{Представление компонент:}
+    \begin{equation*}
+        \mathbf{\omega}_p = \sum_{j=1}^N \alpha_{p,j}\phi(\boldsymbol{x}_j), \quad \alpha_{p,j} = \langle\phi(\boldsymbol{x}_j), \mathbf{\omega}_p\rangle_{\mathbb{H}}.
+    \end{equation*}
+
+    \framebreak
+
+    Подставим это в уравнение для $\mathbf{\omega}_p$:
+
+    \begin{align*}
+         & \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\langle\phi(\boldsymbol{x}_i), \sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j)\rangle_{\mathbb{H}} = \lambda_p\sum_{i=1}^N\alpha_{p,i}\phi(\boldsymbol{x}_i), \\
+         & \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\phi(\boldsymbol{x}_i)^T\sum_{j=1}^N\phi(\boldsymbol{x}_j)\alpha_{p,j} = \lambda_p\sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j),                            \\
+         & \frac{1}{N}\boldsymbol{\Phi}^T\boldsymbol{\Phi}\boldsymbol{\Phi}^T\boldsymbol{\alpha}_p = \lambda_p\boldsymbol{\Phi}^T\boldsymbol{\alpha}_p,                                                              \\
+         & \boldsymbol{\Phi}^T(\boldsymbol{\Phi}\boldsymbol{\Phi}^T\boldsymbol{\alpha}_p - N\lambda_p\boldsymbol{\alpha}_p) = 0                                                                                      \\
+         & \mathbf{K}\boldsymbol{\alpha}_p = N\lambda_p\boldsymbol{\alpha}_p, \hspace{1cm} \mathbf{K} = \boldsymbol{\Phi}\boldsymbol{\Phi}^T, \hspace{1cm} K_{ij} = k(\boldsymbol{x}_i, \boldsymbol{x}_j).
+    \end{align*}
+\end{frame}
+
+\begin{frame}{Проекции на главные компоненты}
+    Проекции на главные компоненты вычисляются \textbf{даже без знания $\phi$}:
+
+    \begin{align*}
+        \boldsymbol{z}_{ij} & = \langle\phi(\boldsymbol{x}_i), \mathbf{\omega}_j\rangle_{\mathbb{H}} = \boldsymbol{\omega}_j^T\phi(\boldsymbol{x}_i) = \sum_{k=1}^N\alpha_{j,k}\phi(\boldsymbol{x}_k)^T\phi(\boldsymbol{x}_i) \\
+                            & = \sum_{k=1}^N\alpha_{j,k}k(\boldsymbol{x}_k, \boldsymbol{x}_i) = \sum_{k=1}^N\alpha_{j,k}\mathbf{K}_{ki} = \sum_{k=1}^N\alpha_{j,k}\mathbf{K}_{ik} = \mathbf{K}_i\boldsymbol{\alpha}_j. \\ \\
+        \mathbf{Z}         & = \mathbf{K}\boldsymbol{\mathbf{\alpha}}.
+    \end{align*}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Центрирование образов}
+    \textbf{Проблема:}
+    Образы $\phi(\boldsymbol{x}_i)$ могут быть нецентрированными, даже если $\boldsymbol{x}_i$ центрированы.
+
+    \textbf{Коррекция:}
+    \begin{equation*}
+        \tilde{\phi}(\boldsymbol{x}) = \phi(\boldsymbol{x}) - \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i).
+    \end{equation*}
+
+    \framebreak
+
+    \textbf{Обновление ядра:}
+    \begin{align*}
+        \tilde{k}(\boldsymbol{x}, \boldsymbol{y}) & = k(\boldsymbol{x}, \boldsymbol{y}) - \frac{1}{N}\sum_{i=1}^N\left(k(\boldsymbol{x}, \boldsymbol{x}_i) - k(\boldsymbol{x}_i, \boldsymbol{y})\right) \\
+                                                  & \quad + \frac{1}{N^2}\sum_{i=1}^N\sum_{j=1}^N k(\boldsymbol{x}_i, \boldsymbol{x}_j).
+    \end{align*}
+
+    Центрированная матрица:
+    \begin{equation*}
+        \tilde{\mathbf{K}} = \left(\mathbf{E} - \frac{1}{N}\mathbf{1}\mathbf{1}^T\right)\mathbf{K}\left(\mathbf{E} - \frac{1}{N}\mathbf{1}\mathbf{1}^T\right),
+    \end{equation*}
+    где $\mathbf{1}$ — вектор из единиц.
+\end{frame}
+
+\begin{frame}{Детали реализации}
+    \textbf{Наиболее популярное ядро:} Гауссово (RBF):
+    \begin{equation*}
+        k(\boldsymbol{x}, \boldsymbol{y}) = \exp\left(-\frac{\|\boldsymbol{x} - \boldsymbol{y}\|^2}{2\sigma^2}\right) = \exp\left(-\gamma\|\boldsymbol{x} - \boldsymbol{y}\|^2\right).
+    \end{equation*}
+
+    \textbf{Альтернативные ядра:}
+    \begin{itemize}
+        \item Полиномиальное: $k(\boldsymbol{x}, \boldsymbol{y}) = (\gamma\boldsymbol{x}^T\boldsymbol{y} + r)^d$.
+        \item Сигмоидальное: $k(\boldsymbol{x}, \boldsymbol{y}) = \tanh(\gamma\boldsymbol{x}^T\boldsymbol{y} + r)$.
+        \item Линейное: $k(\boldsymbol{x}, \boldsymbol{y}) = \boldsymbol{x}^T\boldsymbol{y}$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Практика}
+    \begin{figure}
+        \centering
+        \includegraphics[width=.3\textwidth]{../resources/overall/Jupyter_logo.png}
+    \end{figure}
+\end{frame}
