@@ -2,5 +2,7 @@
 .idea
 **/__pycache__
 presentation/*
+!presentation/
+!presentation/**/
+!presentation/**/*.tex
 !presentation/main.pdf
-!presentation/*.tex
