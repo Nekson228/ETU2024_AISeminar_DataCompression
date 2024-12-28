@@ -21,7 +21,7 @@
 
 В современном мире часто приходится сталкиваться с задачей обработки данных высокой размерности, будь то изображения, текстовые данные или сложные наборы числовых признаков. Однако избыточность данных и так называемое "проклятие размерности" могут значительно ухудшать производительность моделей, затруднять интерпретацию результатов и увеличивать вычислительные затраты.
 
-В свою очередь, методы понижения размерности помогают решать эти проблемы, позволяя выявить наиболее важные признаки, отбрасывая шум и оптимизируя процесс обучения моделей. Существуют как классические методы понижения размерности, такие как анализ главных компонент (PCA) и линейный дискриминантный анализ (LDA), так и современные подходы на основе глубокого обучения, такие как AutoEncoders. Каждый из этих методов имеет свои сильные и слабые стороны, различную применимость в зависимости от типа задачи и структуры данных.
+В свою очередь, методы понижения размерности помогают решать эти проблемы, позволяя выявить наиболее важные признаки, отбрасывая шум и оптимизируя процесс обучения моделей. Существуют как классические методы понижения размерности, такие как анализ главных компонент (PCA), так и современные подходы на основе глубокого обучения, такие как AutoEncoders. Каждый из этих методов имеет свои сильные и слабые стороны, различную применимость в зависимости от типа задачи и структуры данных.
 
 Цель данного доклада — рассмотреть особенности этих методов, их теоретическое обоснование, основные области применения, а также плюсы и минусы каждого подхода.
 
@@ -389,7 +389,10 @@ $$
 2\boldsymbol{b}_j^T\boldsymbol{\Sigma}\boldsymbol{b}_m - \mu_j = 0.
 $$
 
-$\boldsymbol{\Sigma}$ симметрична, поэтому $\boldsymbol{b}_j^T\boldsymbol{\Sigma}\boldsymbol{b}_m = \boldsymbol{\Sigma}\boldsymbol{b}_j^T\boldsymbol{b}_m=0$. Тогда $\mu_j = 0.$ и, аналогично, $\mu_j=0,\:\forall j<m$. Таким образом:
+$\boldsymbol{\Sigma}$ симметрична, поэтому $\boldsymbol{b}_j^T\boldsymbol{\Sigma}\boldsymbol{b}_m = \left\langle (\boldsymbol{b}_j^T\boldsymbol{\Sigma})^T, \boldsymbol{b}_m \right\rangle = \left\langle \boldsymbol{\Sigma}\boldsymbol{b}_j, \boldsymbol{b}_m \right\rangle = \left\langle \lambda_j\boldsymbol{b}_j, \boldsymbol{b}_m \right\rangle = \lambda_j \left\langle \boldsymbol{b}_j, \boldsymbol{b}_m \right\rangle = 0$.
+Тогда $\mu_j = 0.$ и, аналогично, $\forall j<m \:\: \mu_j=0$. 
+
+Таким образом:
 
 $$
 \boldsymbol{\Sigma}\boldsymbol{b}_m = \lambda_m\boldsymbol{b}_m, \\
@@ -455,27 +458,27 @@ $$
 и найти главные компоненты:
 
 $$
-\boldsymbol{\Sigma}\mathbf{W}_p = \lambda_i\mathbf{W}_p \hspace{1cm} p=1,2,\ldots,P.
+\boldsymbol{\Sigma}\mathbf{\omega}_p = \lambda_i\mathbf{\omega}_p \hspace{1cm} p=1,2,\ldots,P.
 $$
 
 Подставим $\boldsymbol{\Sigma}$:
 
 $$
-\frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\phi(\boldsymbol{x}_i)^T\mathbf{W}_p = \lambda_p\mathbf{W}_p \\
-\frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\langle\phi(\boldsymbol{x}_i), \mathbf{W}_p\rangle_{\mathbb{H}} = \lambda_p\mathbf{W}_p.
+\frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\phi(\boldsymbol{x}_i)^T\mathbf{\omega}_p = \lambda_p\mathbf{\omega}_p \\
+\frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\langle\phi(\boldsymbol{x}_i), \mathbf{\omega}_p\rangle_{\mathbb{H}} = \lambda_p\mathbf{\omega}_p.
 $$
 
-То есть главные компоненты $\mathbf{W}_p$ можно представить как линейную комбинацию $\phi(\boldsymbol{x}_i)$:
+То есть главные компоненты $\mathbf{\omega}_p$ можно представить как линейную комбинацию $\phi(\boldsymbol{x}_i)$:
 
 $$
-\mathbf{W}_p = \sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j) \hspace{1cm} \alpha_{p,j}= \langle\phi(\boldsymbol{x}_j), \mathbf{W}_p\rangle_{\mathbb{H}}.
+\mathbf{\omega}_p = \sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j) \hspace{1cm} \alpha_{p,j}= \langle\phi(\boldsymbol{x}_j), \mathbf{\omega}_p\rangle_{\mathbb{H}}.
 $$
 
-Подставим это в уравнение для $\mathbf{W}_p$:
+Подставим это в уравнение для $\mathbf{\omega}_p$:
 
 $$
 \begin{align*}
-& \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\langle\phi(\boldsymbol{x}_i), \sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j)\rangle_{\mathbb{H}} = \lambda_p\frac{1}{N}\sum_{i=1}^N\alpha_{p,i}\phi(\boldsymbol{x}_i), \\
+& \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\langle\phi(\boldsymbol{x}_i), \sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j)\rangle_{\mathbb{H}} = \lambda_p\sum_{i=1}^N\alpha_{p,i}\phi(\boldsymbol{x}_i), \\
 & \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i)\phi(\boldsymbol{x}_i)^T\sum_{j=1}^N\phi(\boldsymbol{x}_j)\alpha_{p,j} = \lambda_p\sum_{j=1}^N\alpha_{p,j}\phi(\boldsymbol{x}_j), \\ 
 & \frac{1}{N}\mathbf{\Phi}^T\mathbf{\Phi}\mathbf{\Phi}^T\boldsymbol{\alpha}_p = \lambda_p\mathbf{\Phi}^T\boldsymbol{\alpha}_p, \\
 & \mathbf{\Phi}^T(\mathbf{\Phi}\mathbf{\Phi}^T\boldsymbol{\alpha}_p - N\lambda_p\boldsymbol{\alpha}_p) = 0 \\ 
@@ -498,7 +501,7 @@ $$
 
 $$
 \begin{align*}
-\boldsymbol{z}_{ij} &= \langle\phi(\boldsymbol{x}_i), \mathbf{W}_j\rangle_{\mathbb{H}} \\
+\boldsymbol{z}_{ij} &= \langle\phi(\boldsymbol{x}_i), \mathbf{\omega}_j\rangle_{\mathbb{H}} \\
 &= \boldsymbol{\omega}_j^T\phi(\boldsymbol{x}_i) \\
 &= \sum_{k=1}^N\alpha_{j,k}\phi(\boldsymbol{x}_k)^T\phi(\boldsymbol{x}_i) \\
 &= \sum_{k=1}^N\alpha_{j,k}k(\boldsymbol{x}_k, \boldsymbol{x}_i) \\
@@ -510,7 +513,7 @@ $$
 
 ### Центрирование образов
 
-Выжно заметить, что не смотря на то, что прообразы $\boldsymbol{x}_i$ центрированы, образы $\phi(\boldsymbol{x}_i)$ в общем случае нет (например, при $\phi(x)$). Поэтому, чтобы применить KPCA, необходимо центрировать образы $\phi(\boldsymbol{x}_i)$:
+Выжно заметить, что не смотря на то, что прообразы $\boldsymbol{x}_i$ центрированы, образы $\phi(\boldsymbol{x}_i)$ в общем случае нет (например, при $\phi(x)=x^2$). Поэтому, чтобы применить KPCA, необходимо центрировать образы $\phi(\boldsymbol{x}_i)$:
 
 $$
 \tilde{\phi}(\boldsymbol{x}) = \phi(\boldsymbol{x}) - \frac{1}{N}\sum_{i=1}^N\phi(\boldsymbol{x}_i).
@@ -549,7 +552,7 @@ $$
 **Замечание:** Проецированные вектора в исходном прострнастве $\tilde{x}$, которые получались естественным образом в PCA, в KPCA не так просто получить. Для нахождения $\tilde{x}$ решается задача оптимизации:
 
 $$
-\min_{\tilde{x}}\|\phi(\boldsymbol{\tilde{x}}) - \sum_{j=1}^P\mathbf{W}_j\langle\phi(\boldsymbol{x}), \mathbf{W}_j\rangle_{\mathbb{H}}\|^2.
+\min_{\tilde{x}}\|\phi(\boldsymbol{\tilde{x}}) - \sum_{j=1}^P\mathbf{\omega}_j\langle\phi(\boldsymbol{x}), \mathbf{\omega}_j\rangle_{\mathbb{H}}\|^2.
 $$
 
 Математика, стоящая за итоговой реализацией обратного преобразования не будет рассмотрена в данной работе. Информацию можно найти в [статье](https://papers.nips.cc/paper/2003/file/ac1ad983e08ad3304a97e147f522747e-Paper.pdf).
@@ -800,7 +803,7 @@ $$
     &= \text{KL}\left(\prod_{i=1}^M\boldsymbol{\mathcal{N}}(z_i \mid \mu_{\boldsymbol{x}i}, \sigma_{\boldsymbol{x}i}^2) \parallel \prod_{i=1}^M\boldsymbol{\mathcal{N}}(z_i \mid 0, 1)\right) \\
     &= \text{KL}\left(\prod_{i=1}^Mq_i(\boldsymbol{z}_i) \parallel \prod_{i=1}^Mp_i(\boldsymbol{z}_i)\right) \\
     &= \int_{\boldsymbol{z}} \prod_{i=1}^Mq_i(\boldsymbol{z}_i)\log\frac{\prod_{i=1}^Mq_i(\boldsymbol{z}_i)}{\prod_{i=1}^Mp_i(\boldsymbol{z}_i)}d\boldsymbol{z} \\    
-    &= \int_{\boldsymbol{z}} \prod_{i=1}^Mq_i(\boldsymbol{z}_i)(\sum_{i=1}^M\log \frac{q_i(\boldsymbol{z}_i)}{p_i(\boldsymbol{z}_i)})d\boldsymbol{z} \\
+    &= \int_{\boldsymbol{z}} \prod_{i=1}^Mq_i(\boldsymbol{z}_i)\left(\sum_{i=1}^M\log \frac{q_i(\boldsymbol{z}_i)}{p_i(\boldsymbol{z}_i)}\right)d\boldsymbol{z} \\
     &= \sum_{j=1}^M\int_{\boldsymbol{z}} \log \frac{q_j(\boldsymbol{z}_j)}{p_j(\boldsymbol{z}_j)} \prod_{i=1}^Mq_i(\boldsymbol{z}_i) d\boldsymbol{z}_1\ldots d\boldsymbol{z}_M \\
     &= \sum_{j=1}^M \left( \left( \int_{\boldsymbol{z}_j} \log \frac{q_j(\boldsymbol{z}_j)}{p_j(\boldsymbol{z}_j)}q_j(\boldsymbol{z}_j) d\boldsymbol{z}_j \right) \prod_{i\neq j}^M \int_{\boldsymbol{z}_i} q_i(\boldsymbol{z}_i) d\boldsymbol{z}_i \right) \\
     &= \sum_{j=1}^M \left( \int_{\boldsymbol{z}_j} \log \frac{q_j(\boldsymbol{z}_j)}{p_j(\boldsymbol{z}_j)}q_j(\boldsymbol{z}_j) d\boldsymbol{z}_j \right) \\
@@ -867,12 +870,13 @@ $$
 
 $$
 \begin{align*}
-    & \boldsymbol{z}_j \sim \boldsymbol{\mathcal{N}}( \boldsymbol{z}_j \mid \mu_{\boldsymbol{x}j}, \sigma_{\boldsymbol{x}j}^2) \\
-    & \Leftrightarrow 
+    & \boldsymbol{z}_j \sim \boldsymbol{\mathcal{N}}( \boldsymbol{z}_j \mid \mu_{\boldsymbol{x}j}, \sigma_{\boldsymbol{x}j}^2) \Leftrightarrow 
     \begin{cases}
         & \boldsymbol{\varepsilon}_j \sim \boldsymbol{\mathcal{N}}(0, 1) \\
         & \boldsymbol{z}_j = \mu_{\boldsymbol{x}j} + \sigma_{\boldsymbol{x}j}\boldsymbol{\varepsilon}_j.  
-    \end{cases}
+    \end{cases} \\
+    \Rightarrow & \mathbb{E}[\boldsymbol{z}_j] = \mathbb{E}[\mu_{\boldsymbol{x}j} + \sigma_{\boldsymbol{x}j}\boldsymbol{\varepsilon}_j] = \mu_{\boldsymbol{x}j} + \sigma_{\boldsymbol{x}j}\mathbb{E}[\boldsymbol{\varepsilon}_j] = \mu_{\boldsymbol{x}j}, \\
+    & \mathbb{D}[\boldsymbol{z}_j] = \mathbb{D}[\mu_{\boldsymbol{x}j} + \sigma_{\boldsymbol{x}j}\boldsymbol{\varepsilon}_j] = \sigma_{\boldsymbol{x}j}^2\mathbb{D}[\boldsymbol{\varepsilon}_j] = \sigma_{\boldsymbol{x}j}^2. 
 \end{align*}
 $$
 
@@ -909,7 +913,7 @@ $$
 | Метод | Преимущества                                                                                                               | Недостатки                                                                                                      | Примеры применения                                                |
 |-------|----------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------|
 | PCA   | Простота, интерпретируемость, вычислительная эффективность                                                                 | Линейность, неустойчивость к выбросам                                                                           | Визуализация данных, анализ финансовых рынков, обработка сигналов |
-| KPCA  | Нелинейность, способность моделировать сложные зависимости                                                                 | Неинтерпретируемость, сложность в выборе ядра и его гиперпараметров, вычислительная сложность на больших данных | Распознавание образов, биоинформатика, обработка изображений      |
+| KPCA  | Нелинейность, способность моделировать сложные зависимости                                                                 | Неинтерпретируемость, сложность в выборе ядра и его гиперпараметров, вычислительная сложность на больших данных, сложности с реконструкцией | Распознавание образов, биоинформатика, обработка изображений      |
 | AE    | Нелинейность, устойчивость к выбросам и шуму, возможность обучения сложных зависимостей                                    | Неинтерпретируемость, сложность в обучении, потребность в большом количестве данных                             | Сжатие изображений, удаление шума, обнаружение аномалий           |
 | VAE   | Нелинейность, устойчивость к выбросам и шуму, интерпретируемость скрытого пространства, возможность генерации новых данных | Сложность в обучении, зависимость от качества априорного распределения                                          | Генерация изображений, моделирование молекул, обработка текстов   |
 
