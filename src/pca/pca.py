@@ -12,6 +12,7 @@ class PCA(BaseEstimator, TransformerMixin):
 
         self._components_: np.ndarray | None = None
         self._explained_variance_: np.ndarray | None = None
+        self._overall_variance_: float | None = None
 
         self._mean_: np.ndarray | None = None
         self._std_: np.ndarray | None = None
@@ -26,7 +27,7 @@ class PCA(BaseEstimator, TransformerMixin):
 
     @property
     def explained_variance_ratio_(self) -> np.ndarray:
-        return self._explained_variance_ / np.sum(self._explained_variance_)
+        return self._explained_variance_ / self._overall_variance_
 
     @property
     def mean_(self) -> np.ndarray:
@@ -45,6 +46,8 @@ class PCA(BaseEstimator, TransformerMixin):
 
         cov = np.cov(X.T)
         eig_vals, eig_vecs = np.linalg.eigh(cov)  # eigh is used for symmetric (hermitian) matrices
+
+        self._overall_variance_ = np.sum(eig_vals)
 
         idx = np.argsort(eig_vals)[::-1]
         self._components_ = eig_vecs[:, idx]
@@ -71,4 +74,4 @@ class PCA(BaseEstimator, TransformerMixin):
     def inverse_transform(self, X: np.ndarray) -> np.ndarray:
         check_array(X)
 
-        return self.mean_ + (X @ self.components_.T) * self.std_
+        return X @ self.components_.T * self.std_ + self.mean_
