@@ -5,4 +5,4 @@ presentation/*
 !presentation/
 !presentation/**/
 !presentation/**/*.tex
-!presentation/main.pdf
+!presentation/*.pdf
