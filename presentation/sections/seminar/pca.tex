@@ -34,18 +34,18 @@
     Исходный вектор: $\boldsymbol{x}_i \in \mathbb{R}^2$, $\boldsymbol{x}_i = \begin{bmatrix} 5 \\ \frac{1}{100} \end{bmatrix}$.
     Выбираем базис $\mathbf{B} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$.
 
-    \textbf{Шаги:}
-    \begin{itemize}
-        \item Координаты в новом базисе: $\boldsymbol{z}_i = \mathbf{B}^T\boldsymbol{x}_i = 5.$
-        \item Восстановленный вектор: $\tilde{\boldsymbol{x}}_i = \mathbf{B}\boldsymbol{z}_i = \begin{bmatrix} 5 \\ 0 \end{bmatrix}.$
-    \end{itemize}
-
     \begin{columns}
         \column{0.5\textwidth}
-        \includegraphics[width=0.8\textwidth]{../resources/pca/simple_example.png}
+        \textbf{Шаги:}
+        \begin{itemize}
+            \item Координаты в новом базисе: $\boldsymbol{z}_i = \mathbf{B}^T\boldsymbol{x}_i = 5.$
+            \item Восстановленный вектор: $\tilde{\boldsymbol{x}}_i = \mathbf{B}\boldsymbol{z}_i = \begin{bmatrix} 5 \\ 0 \end{bmatrix}.$
+        \end{itemize}
 
-        \column{0.5\textwidth}
-        \includegraphics[width=0.8\textwidth]{../resources/pca/simple_example_comp.png}
+        \column{0.55\textwidth}
+        \begin{center}
+            \includegraphics[width=1\textwidth]{../resources/pca/simple_example_both.png}
+        \end{center}
     \end{columns}
 \end{frame}
 
